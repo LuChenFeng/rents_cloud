@@ -1,4 +1,4 @@
-package pers.lcf.rents.forum.web.controller;
+package pers.lcf.rents.forum.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -7,19 +7,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pers.lcf.rents.forum.model.User;
 import pers.lcf.rents.forum.service.IUserService;
+import pers.lcf.rents.utils.ResponseJson;
 
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping("/user")
+@RequestMapping("/userb")
 public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private ResponseJson responseJson;
+
+
+
     @RequestMapping("/findByUserName")
-    public User findByUserName(String name) {
+    public ResponseJson findByUserName(String name) {
         User user = userService.findByUserName(name);
-        return user;
+        responseJson.setSuccessResPonse(user);
+        return responseJson;
     }
 
     @RequestMapping("/getUser/{id}")
