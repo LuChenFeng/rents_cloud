@@ -24,6 +24,8 @@ public class UserStyle {
 
     private Integer thinking;
 
+    private Integer styleSum;
+
     private Byte isPets;
 
     private Byte isConstellation;

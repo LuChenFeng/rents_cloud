@@ -15,19 +15,19 @@ import java.io.Serializable;
  */
 @Component
 @Data
-public class ResponseJson<T>  implements Serializable {
+public class ResponseJson<T> implements Serializable {
     private static final long serialVersionUID = -3820536327275382207L;
     private int code;
     private T data;
     private String msg;
 
-/**
- * @Param: [data]
- * @Return: void
- * @Author: lcf
- * @Date: 2019/10/3 21:14
- * 成功执行时调用
- */
+    /**
+     * @Param: [data]
+     * @Return: void
+     * @Author: lcf
+     * @Date: 2019/10/3 21:14
+     * 成功执行时调用
+     */
     public void setSuccessResPonse(T data) {
         this.code = 200;
         this.msg = "success";
@@ -47,28 +47,32 @@ public class ResponseJson<T>  implements Serializable {
         this.data = data;
     }
 
-    public void setResPonse(String flag){
-        if("".equals(flag)||flag==null ){
+    public void setResPonse(String flag) {
+        if ("".equals(flag) || flag == null) {
             this.code = 500;
             this.msg = "error";
-        }
-        else {
+        } else {
             this.code = 200;
             this.msg = "success";
         }
-this.data=null;
+        this.data = null;
     }
-    public void setResPonse(int flag){
-        if(flag<=0 ){
+
+    public void setResPonse(int flag) {
+        if (flag <= 0) {
             this.code = 500;
             this.msg = "error";
-        }
-        else {
+        } else {
             this.code = 200;
             this.msg = "success";
         }
-        this.data=null;
+        this.data = null;
+    }
 
+    public  void setResPonseSelfMsg(String msg){
+        this.code = 450;
+        this.msg = msg;
+        this.data=null;
     }
 
 }

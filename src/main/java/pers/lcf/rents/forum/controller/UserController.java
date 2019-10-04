@@ -1,43 +1,50 @@
 package pers.lcf.rents.forum.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pers.lcf.rents.forum.model.User;
-import pers.lcf.rents.forum.service.IUserService;
-import pers.lcf.rents.utils.ResponseJson;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import pers.lcf.rents.utils.FileUtil;
+
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/userb")
 public class UserController {
-    @Autowired
-    private IUserService userService;
 
-    @Autowired
-    private ResponseJson responseJson;
-
-
-
-    @RequestMapping("/findByUserName")
-    public ResponseJson findByUserName(String name) {
-        User user = userService.findByUserName(name);
-        responseJson.setSuccessResPonse(user);
-        return responseJson;
+    //处理文件上传
+    @RequestMapping(value="/uploadimg", method = RequestMethod.POST)
+    public @ResponseBody String uploadImg(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        String info = null;
+        try {
+            info = FileUtil.uploadFile(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return info;
     }
-
-    @RequestMapping("/getUser/{id}")
-    public User getUser(@PathVariable() Integer id) {
-        User user = new User("lcf", "123");
-        user.setId(1);
-        return user;
+    //处理多文件上传
+    @RequestMapping(value="/testuploadimgs", method = RequestMethod.POST)
+    @ResponseBody
+    public String multipleFilesUpload(HttpServletRequest request) {
+        //获取上传的文件数组
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+        //遍历处理文件
+        String info = null;
+        for (MultipartFile file : files) {
+            try {
+                String s = FileUtil.uploadFile(file);
+                info = info + "-" + s;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return info;
     }
-
-//    @RequestMapping("/insertUser")
-//    public void inserUser(User user) {
-//        userService.insertUser(user);
-//    }
 }
