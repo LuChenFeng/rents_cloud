@@ -15,6 +15,6 @@ public class UserMatch {
     private String avatar;
     private String sex;
     private String statement;
-    private Integer similarity;
+    private Float similarity;
     private UserStyle userStyle;
 }

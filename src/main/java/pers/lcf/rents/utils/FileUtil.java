@@ -21,9 +21,9 @@ public class FileUtil {
      * @param file
      * @return
      */
-    public static String uploadFile(MultipartFile file){
+    public static String uploadFile(MultipartFile file,String fileSon){
         String fileName = file.getOriginalFilename();
-        String filePath = "D:\\repository\\";
+        String filePath = BaseConstant.IMG_PATH+fileSon;
         File targetFile = new File(filePath);
         //第一步：判断文件是否为空
         if(file.isEmpty())return fileName+"文件为空";
@@ -46,8 +46,7 @@ public class FileUtil {
                 e.printStackTrace();
             }
         }
-        return fileName+"上传成功";
+        return BaseConstant.IMG_URL+fileSon+fileName;
     }
-
 
 }

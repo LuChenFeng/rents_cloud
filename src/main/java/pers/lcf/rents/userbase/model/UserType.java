@@ -9,7 +9,7 @@ public class UserType {
 
     private String id;
     private String userTypeName;
-    private Date gmtCreate;
-    private Date gmtModified;
+    private String gmtCreate;
+    private String gmtModified;
 
 }

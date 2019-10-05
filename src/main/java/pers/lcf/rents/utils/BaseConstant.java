@@ -9,7 +9,16 @@ package pers.lcf.rents.utils;
 public class BaseConstant {
 
     //室友匹配--步长值
-    public  static  final Integer MATCH_STEP=10;
-    //室友匹配--相识指数控制值
-    public  static  final Integer MATCH_SIMILAR=100;
+    public static final Integer MATCH_STEP = 10;
+    //室友匹配--指数最大差
+    public static final float MATCH_SIMILAR = 20;
+    //室友匹配--匹配参数个数
+    public static final float MATCH_NUM=5;
+
+    //linux下文件上传路径
+    public static final String IMG_PATH = "/srv/rentsUpLoad/";
+    //windows 文件上传测试路径
+//    public static  final  String IMG_PATH="D:/rentsUpLoad/";
+    public  static  final String IMG_URL="http://47.102.192.121:8000/rentsUpLoad/";
+
 }

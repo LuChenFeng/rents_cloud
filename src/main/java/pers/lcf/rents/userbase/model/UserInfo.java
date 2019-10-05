@@ -13,10 +13,10 @@ public class UserInfo {
     private String userName;
     private String avatar;
     private String sex;
-    private Date birthady;
+    private String birthady;
     private String tel;
     private String statement;
     private Integer reportSum;
-    private Date gmtCreate;
-    private Date gmtModified;
+    private String gmtCreate;
+    private String gmtModified;
 }

@@ -4,12 +4,15 @@ import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pers.lcf.rents.userbase.model.UserInfo;
 import pers.lcf.rents.userbase.model.UserMatch;
 import pers.lcf.rents.userbase.model.UserStyle;
 import pers.lcf.rents.userbase.service.UserBaseService;
+import pers.lcf.rents.utils.FileUtil;
 import pers.lcf.rents.utils.ResponseJson;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,6 +85,27 @@ public class UserBaseController {
         return responseJson;
     }
 
-
+    /**
+     * @Param: [file, request]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/10/5 20:09
+     * 头像上传
+     */
+    //处理单个文件上传
+    @RequestMapping(value="/uploadimg", method = RequestMethod.POST)
+    public  ResponseJson uploadImg(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        String info = null;
+        String fileSon="avatarImage/";
+        List<String> imageUrl= CollUtil.newArrayList();
+        try {
+            info = FileUtil.uploadFile(file,fileSon);
+            imageUrl.add(info);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        responseJson.setSuccessResPonse(imageUrl);
+        return responseJson;
+    }
 
 }

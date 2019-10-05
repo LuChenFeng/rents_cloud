@@ -133,11 +133,13 @@ public class UserBaseServiceImpl implements UserBaseService {
 
             Iterator<Integer> itSF = styleFractions.iterator();
             Iterator<Integer> itUMF = userMatchFractions.iterator();
-            int similarity=0; //性格指数差距
+            float similarity=0; //性格指数差距
             while (itSF.hasNext() && itUMF.hasNext()) {
                 similarity+=Math.abs(itSF.next()-itUMF.next());
             }
-            userMatch.setSimilarity(BaseConstant.MATCH_SIMILAR-similarity);
+            //相识度计算 总差距/比较数量=平均每个指数差距 ，（最大差距-实际每个指数差距）/最大差距=相似度
+            float lastSimilarity=(float)(BaseConstant.MATCH_SIMILAR-(similarity/BaseConstant.MATCH_NUM))/BaseConstant.MATCH_SIMILAR;
+            userMatch.setSimilarity(lastSimilarity*100);
         }
         return matchStyles;
     }

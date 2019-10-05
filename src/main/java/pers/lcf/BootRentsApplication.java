@@ -1,12 +1,10 @@
-package pers.lcf.rents;
+package pers.lcf;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.MultipartConfigElement;
@@ -21,11 +19,11 @@ import javax.servlet.MultipartConfigElement;
 @SpringBootApplication
 @MapperScan("pers.lcf.rents")
 @Configuration
-public class App
+public class BootRentsApplication
 {
     public static void main( String[] args )
     {
-        SpringApplication.run(App.class,args);
+        SpringApplication.run(BootRentsApplication.class,args);
     }
 
     @Bean
@@ -37,6 +35,4 @@ public class App
         factory.setMaxRequestSize("50MB");
         return factory.createMultipartConfig();
     }
-
-
 }

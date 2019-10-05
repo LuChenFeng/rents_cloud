@@ -11,6 +11,6 @@ public class UserLogin {
     private String loginName;
     private String password;
     private Byte isState;
-    private Date gmtCreate;
-    private Date gmtModified;
+    private String gmtCreate;
+    private String gmtModified;
 }
