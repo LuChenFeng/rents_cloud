@@ -3,6 +3,7 @@ package pers.lcf.rents.forum.model;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class PostsInfo {
@@ -11,14 +12,15 @@ public class PostsInfo {
     private String userInfoId;
     private String title;
     private BigDecimal price;
-    private Integer replycount;
-    private Integer expectsex;
+    private Integer replyCount;
+    private Integer limitSex;
     private Byte isFlag;
     private BigDecimal longitude;
     private BigDecimal latitude;
-    private String locationname;
-    private String locationaddress;
-    private String contents;
+    private String locationName;
+    private String locationAddress;
     private String gmtCreate;
     private String gmtModified;
+    private String contents;
+    private List<PostsImg> postsImgs;
 }
