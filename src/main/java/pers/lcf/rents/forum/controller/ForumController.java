@@ -78,7 +78,7 @@ public class ForumController {
      * @Date: 2019/10/6 14:20
      * 发布帖子
      */
-    @PostMapping("/insertPostInfo")
+    @PostMapping("/postInfo")
     public ResponseJson insertPostInfo(@RequestBody PostsInfo postsInfo) {
         if (postsInfo.getPostTypeId() == null || postsInfo.getPostTypeId() == "") {
             responseJson.setResPonseSelfMsg("未选择帖子类型");
@@ -97,16 +97,43 @@ public class ForumController {
      * @Param: [id]
      * @Return: pers.lcf.rents.utils.ResponseJson
      * @Author: lcf
+     * @Date: 2019/10/7 19:53
+     * 联级删除帖子
+     */
+    @DeleteMapping("/postInfo")
+    public ResponseJson delPostsInfoById(String id) {
+        int flag = forumServiceImpl.delPostsInfoById(id);
+        responseJson.setResPonse(flag);
+        return responseJson;
+    }
+
+    /**
+     * @Param: [id]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
      * @Date: 2019/10/6 14:33
      * 根据帖子id 查看帖子详情
      */
     @GetMapping("/getPostInfoByid")
     public ResponseJson getPostInfoByid(String id) {
-        PostDetails postDetails = forumServiceImpl.getPostInfoByid(id);
+        PostDetails postDetails = forumServiceImpl.getPostInfoById(id);
+        responseJson.setSuccessResPonse(postDetails);
+        return responseJson;
+    }
+    @PostMapping("/getPostinfoBypage")
+    public ResponseJson getPostDetailsByPage( @RequestBody PostDeatailsDTO postDeatailsDTO){
+        List<PostDetails> postDetails=forumServiceImpl.getPostDetailsByPage(postDeatailsDTO);
         responseJson.setSuccessResPonse(postDetails);
         return responseJson;
     }
 
+    /**
+     * @Param: [postsReport]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/10/7 19:33
+     * 添加举报信息
+     */
     @PostMapping("/postsReport")
     public ResponseJson insertPostsReport(@RequestBody PostsReport postsReport) {
         int flag = forumServiceImpl.insertPostsReport(postsReport);
@@ -133,7 +160,7 @@ public class ForumController {
      * @Return: pers.lcf.rents.utils.ResponseJson
      * @Author: lcf
      * @Date: 2019/10/6 20:12
-     * 删除评论
+     * 删除评论--联级删除
      */
     @DeleteMapping("/postsComment")
     public ResponseJson delPostsCommentById(String id) {
@@ -150,8 +177,8 @@ public class ForumController {
      * 根据帖子id查看评论
      */
     @GetMapping("/postsComment")
-    public ResponseJson  getCommentByPostsId(String id){
-        List<CommentReply> commentReplies=forumServiceImpl.getCommentByPostsId(id);
+    public ResponseJson getCommentByPostsId(String id) {
+        List<CurrentComment> commentReplies = forumServiceImpl.getCommentByPostsId(id);
         responseJson.setSuccessResPonse(commentReplies);
         return responseJson;
     }
@@ -163,7 +190,7 @@ public class ForumController {
      * @Date: 2019/10/6 18:45
      * 添加评论回复
      */
-    @PostMapping("/insertPostsReply")
+    @PostMapping("/postsReply")
     public ResponseJson insertPostsReply(@RequestBody PostsReply postsReply) {
         int flag = forumServiceImpl.insertPostsReply(postsReply);
         responseJson.setResPonse(flag);
@@ -177,12 +204,23 @@ public class ForumController {
      * @Date: 2019/10/6 19:20
      * 删除评论回复
      */
-    @DeleteMapping("/insertPostsReply")
-    public ResponseJson delPostsReplyById( String id) {
+    @DeleteMapping("/postsReply")
+    public ResponseJson delPostsReplyById(String id) {
         int flag = forumServiceImpl.delPostsReplyById(id);
         responseJson.setResPonse(flag);
         return responseJson;
     }
-
-
+/**
+ * @Param: [id]
+ * @Return: pers.lcf.rents.utils.ResponseJson
+ * @Author: lcf
+ * @Date: 2019/10/8 9:08
+ * 根据评论id获取回复
+ */
+    @GetMapping("/postsReply")
+    public ResponseJson getReplyByCommentId(String id) {
+        List<PostsReply> postsReplies = forumServiceImpl.getReplyByCommentId(id);
+        responseJson.setSuccessResPonse(postsReplies);
+        return responseJson;
+    }
 }

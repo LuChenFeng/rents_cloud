@@ -6,18 +6,17 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @ClassName CommentReply
+ * @ClassName CurrentReply
  * @Deacription TODO
  * @Author lcf
- * @Date 2019/10/6 20:20
+ * @Date 2019/10/7 16:41
  **/
 @Data
-public class CommentReply {
-    private String commentId;
+public class CurrentReply {
+    private String userId;
+    private String replyId;
     private String userName;
     private String avatar;
     private String content;
     private String gmtCreate;
-    private List postsReplies= CollUtil.newArrayList();
-    private Integer repliesSize;
 }

@@ -86,10 +86,37 @@ public class ForumServiceImpl implements ForumService {
         int imgFlag = postsImgMapper.insert(postsImgs);
         return infoFlag;
     }
+/**
+ * @Param: [id]
+ * @Return: java.lang.Integer
+ * @Author: lcf
+ * @Date: 2019/10/7 19:52
+ * 联级删除帖子
+ */
+    @Override
+    public Integer delPostsInfoById(String id) {
+        int flag = postsInfoMapper.deleteByExample(id);
+        return flag;
+    }
+/**
+ * @Param: [postDeatailsDTO]
+ * @Return: java.util.List<pers.lcf.rents.forum.model.PostDetails>
+ * @Author: lcf
+ * @Date: 2019/10/8 10:19
+ * 分页查询帖子简要信息
+ */
+    @Override
+    public List<PostDetails> getPostDetailsByPage(PostDeatailsDTO postDeatailsDTO) {
+
+
+     List<PostDetails> details=postsInfoMapper.getPostDetailsByPage(postDeatailsDTO);
+
+        return details;
+    }
 
     @Override
-    public PostDetails getPostInfoByid(String id) {
-        PostDetails postDetails = postsInfoMapper.getPostInfoByid(id);
+    public PostDetails getPostInfoById(String id) {
+        PostDetails postDetails = postsInfoMapper.getPostInfoById(id);
 //        找该贴附图
         PostsImgExample example = new PostsImgExample();
         PostsImgExample.Criteria criteria = example.createCriteria();
@@ -99,7 +126,6 @@ public class ForumServiceImpl implements ForumService {
         List<String> imgs = CollUtil.newArrayList();
         Iterator<PostsImg> itImg = postsImgs.iterator();
         while (itImg.hasNext()) {
-
             imgs.add(itImg.next().getImg());
         }
         postDetails.setImgs(imgs);
@@ -147,10 +173,7 @@ public class ForumServiceImpl implements ForumService {
      */
     @Override
     public Integer delPostsCommentById(String id) {
-        PostsCommentExample example = new PostsCommentExample();
-        PostsCommentExample.Criteria criteria = example.createCriteria();
-        criteria.andIdEqualTo(id);
-        int flag = postsCommentMapper.deleteByExample(example);
+        int flag = postsCommentMapper.deleteByExample(id);
         return flag;
     }
 
@@ -187,9 +210,15 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
-    public List<CommentReply> getCommentByPostsId(String id) {
-        List<CommentReply> commentReplies=postsCommentMapper.getCommentByPostsId(id);
+    public List<CurrentComment> getCommentByPostsId(String id) {
+        List<CurrentComment> commentReplies = postsCommentMapper.getCommentByPostsId(id);
         return commentReplies;
+    }
+
+    @Override
+    public List<PostsReply> getReplyByCommentId(String id) {
+        List<PostsReply> postsReplies = postsReplyMapper.getReplyByCommentId(id);
+        return postsReplies;
     }
 
 }
