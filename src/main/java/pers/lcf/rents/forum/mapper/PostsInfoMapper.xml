@@ -159,12 +159,10 @@
                 or pi.location_name  like '%${likeStr}%'
                 or location_address  like '%${likeStr}%'
                 )
---
             </if>
             and pi.user_info_id=ui.id and pi.post_type_id=pt.id
-
         </where>
-        ORDER BY pi.gmt_create desc
+        ORDER BY pi.gmt_create desc limit #{start},#{end}
     </select>
 
     <select id="selectByExampleWithBLOBs" parameterType="pers.lcf.rents.forum.model.PostsInfoExample"
@@ -208,7 +206,6 @@
         LEFT OUTER JOIN posts_reply
         ON posts_comment.id = posts_reply.posts_comment_id
         WHERE posts_info.id=#{id}
-
     </delete>
     <insert id="insert" parameterType="pers.lcf.rents.forum.model.PostsInfo">
         insert into posts_info (id, post_type_id, user_info_id,

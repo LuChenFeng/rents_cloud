@@ -46,7 +46,6 @@ public class ForumController {
         if (commonsMultipartResolver.isMultipart(request)) {
             MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request;
             Map<String, MultipartFile> map = mulReq.getFileMap();
-
             // key为前端的name属性，value为上传的对象（MultipartFile）
             for (Map.Entry<String, MultipartFile> entry : map.entrySet()) {
                 String s = FileUtil.uploadFile(entry.getValue(), fileSon);

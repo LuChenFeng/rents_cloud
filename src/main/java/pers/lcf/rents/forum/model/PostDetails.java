@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class PostDetails {
     private String userId;
-    private  String postsId;
+    private String postsId;
     private String postTypeName;
     private String userName;
     private String avatar;
@@ -22,4 +22,5 @@ public class PostDetails {
     private String birthady;
     private PostsInfo postsInfo;
     private List<String> imgs;
+    private Long pageTotal;
 }

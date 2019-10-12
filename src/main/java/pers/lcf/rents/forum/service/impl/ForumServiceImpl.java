@@ -3,6 +3,7 @@ package pers.lcf.rents.forum.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.lcf.rents.forum.mapper.*;
@@ -107,10 +108,10 @@ public class ForumServiceImpl implements ForumService {
  */
     @Override
     public List<PostDetails> getPostDetailsByPage(PostDeatailsDTO postDeatailsDTO) {
-
-
+       int[] startEnd = PageUtil.transToStartEnd(postDeatailsDTO.getPageNo(), postDeatailsDTO.getPageSize());
+       postDeatailsDTO.setStart(startEnd[0]);
+       postDeatailsDTO.setEnd(startEnd[1]);
      List<PostDetails> details=postsInfoMapper.getPostDetailsByPage(postDeatailsDTO);
-
         return details;
     }
 

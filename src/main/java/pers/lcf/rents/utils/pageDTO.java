@@ -5,14 +5,14 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @ClassName BaseDTO
+ * @ClassName pageDTO
  * @Deacription TODO
  * @Author lcf
  * @Date 2019/10/8 10:10
  **/
 @Data
-public class BaseDTO implements Serializable {
+public class pageDTO implements Serializable {
     private static final long serialVersionUID = -8315132785161566453L;
-    private  long pageNo=1L;
-    private  long pageSize=4L;
+    private  Integer pageNo=1;
+    private  Integer pageSize=4;
 }
