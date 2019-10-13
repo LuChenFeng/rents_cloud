@@ -22,5 +22,5 @@ public class PostDetails {
     private String birthady;
     private PostsInfo postsInfo;
     private List<String> imgs;
-    private Long pageTotal;
+
 }

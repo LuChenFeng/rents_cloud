@@ -39,7 +39,6 @@
     </resultMap>
 
 
-
     <sql id="Example_Where_Clause">
 
         <where>
@@ -155,10 +154,13 @@
         <where>
             <if test="likeStr !=null">
                 and (pi.title like '%${likeStr}%'
-                or pi.contents  like '%${likeStr}%'
-                or pi.location_name  like '%${likeStr}%'
-                or location_address  like '%${likeStr}%'
+                or pi.contents like '%${likeStr}%'
+                or pi.location_name like '%${likeStr}%'
+                or location_address like '%${likeStr}%'
                 )
+            </if>
+            <if test="city !=null">
+                and pi.location_address like '%${city}%'
             </if>
             and pi.user_info_id=ui.id and pi.post_type_id=pt.id
         </where>

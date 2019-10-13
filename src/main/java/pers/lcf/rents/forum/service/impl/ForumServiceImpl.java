@@ -87,32 +87,76 @@ public class ForumServiceImpl implements ForumService {
         int imgFlag = postsImgMapper.insert(postsImgs);
         return infoFlag;
     }
-/**
- * @Param: [id]
- * @Return: java.lang.Integer
- * @Author: lcf
- * @Date: 2019/10/7 19:52
- * 联级删除帖子
- */
+
+    /**
+     * @Param: [id]
+     * @Return: java.lang.Integer
+     * @Author: lcf
+     * @Date: 2019/10/7 19:52
+     * 联级删除帖子
+     */
     @Override
     public Integer delPostsInfoById(String id) {
         int flag = postsInfoMapper.deleteByExample(id);
         return flag;
     }
-/**
- * @Param: [postDeatailsDTO]
- * @Return: java.util.List<pers.lcf.rents.forum.model.PostDetails>
- * @Author: lcf
- * @Date: 2019/10/8 10:19
- * 分页查询帖子简要信息
- */
+
+    /**
+     * @Param: [postDeatailsDTO]
+     * @Return: java.util.List<pers.lcf.rents.forum.model.PostDetails>
+     * @Author: lcf
+     * @Date: 2019/10/8 10:19
+     * 分页查询帖子简要信息
+     */
     @Override
-    public List<PostDetails> getPostDetailsByPage(PostDeatailsDTO postDeatailsDTO) {
-       int[] startEnd = PageUtil.transToStartEnd(postDeatailsDTO.getPageNo(), postDeatailsDTO.getPageSize());
-       postDeatailsDTO.setStart(startEnd[0]);
-       postDeatailsDTO.setEnd(startEnd[1]);
-     List<PostDetails> details=postsInfoMapper.getPostDetailsByPage(postDeatailsDTO);
-        return details;
+    public PostDetailsPage getPostDetailsByPage(PostDeatailsDTO postDeatailsDTO) {
+        int[] startEnd = PageUtil.transToStartEnd(postDeatailsDTO.getPageNo(), postDeatailsDTO.getPageSize());
+        postDeatailsDTO.setStart(startEnd[0]);
+        postDeatailsDTO.setEnd(startEnd[1]);
+        List<PostDetails> postDetails = postsInfoMapper.getPostDetailsByPage(postDeatailsDTO);
+        //取到帖子id
+        List<String> postsIds = CollUtil.newArrayList();
+        Iterator<PostDetails> itGetId = postDetails.iterator();
+        while (itGetId.hasNext()) {
+            postsIds.add(itGetId.next().getPostsId());
+        }
+        if(CollUtil.isEmpty(postDetails)){
+            return null;
+        }
+        //查找帖子附图
+       List<PostsImg> postsImgs= postsImgMapper.getImgsByPostsIds(postsIds);
+        Iterator<PostDetails> itPostDetails=postDetails.iterator();
+        while (itPostDetails.hasNext()){
+            PostDetails postDetail=itPostDetails.next();
+            Iterator<PostsImg> itPostImg=postsImgs.iterator();
+            List<String> imgs=CollUtil.newArrayList();
+            int flag=0;
+            while (itPostImg.hasNext()){
+                PostsImg postsImg=itPostImg.next();
+                if(postsImg.getPostsInfoId().equals(postDetail.getPostsId())){
+                  imgs.add(postsImg.getImg());
+                    ++flag;
+                  if(flag>3) {
+                    break;
+                  }
+                }
+            }
+            if(flag!=0){
+                postDetail.setImgs(imgs);
+            }
+        }
+
+        PostDetailsPage postDetailsPage=new PostDetailsPage();
+        postDetailsPage.setPostDetails(postDetails);
+        PostsInfoExample example=new PostsInfoExample();
+        PostsInfoExample.Criteria criteria=example.createCriteria();
+//        统计页数
+        if( postDeatailsDTO.getCity()!=null){
+            criteria.andLocationAddressLike('%'+postDeatailsDTO.getCity()+'%');
+            long pageTotal= postsInfoMapper.countByExample(example);
+            postDetailsPage.setPageTotal((long) PageUtil.totalPage((int) pageTotal,postDeatailsDTO.getPageSize()));
+        }
+        return postDetailsPage;
     }
 
     @Override

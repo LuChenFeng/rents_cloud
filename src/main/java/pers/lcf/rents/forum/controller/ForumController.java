@@ -121,8 +121,8 @@ public class ForumController {
     }
     @PostMapping("/getPostinfoBypage")
     public ResponseJson getPostDetailsByPage( @RequestBody PostDeatailsDTO postDeatailsDTO){
-        List<PostDetails> postDetails=forumServiceImpl.getPostDetailsByPage(postDeatailsDTO);
-        responseJson.setSuccessResPonse(postDetails);
+        PostDetailsPage postDetailsPage=forumServiceImpl.getPostDetailsByPage(postDeatailsDTO);
+        responseJson.setSuccessResPonse(postDetailsPage);
         return responseJson;
     }
 

@@ -8,7 +8,7 @@ public interface ForumService {
     List<PostsType> selectTypeByIsHave(Byte isHave);
     Integer insertPostInfo(PostsInfo postsInfo);
     Integer delPostsInfoById(String id);
-    List<PostDetails> getPostDetailsByPage(PostDeatailsDTO postDeatailsDTO);
+    PostDetailsPage getPostDetailsByPage(PostDeatailsDTO postDeatailsDTO);
     PostDetails getPostInfoById(String id);
     Integer insertPostsReport(PostsReport postsReport);
     Integer insertPostsComment(PostsComment postsComment);

@@ -12,6 +12,7 @@ import pers.lcf.rents.utils.pageDTO;
 @Data
 public class PostDeatailsDTO extends pageDTO {
     private String likeStr;
+    private  String city;
     private  Integer  start;
     private  Integer end;
     private  Integer pageNum;
