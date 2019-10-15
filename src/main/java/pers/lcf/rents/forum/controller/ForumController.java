@@ -38,7 +38,7 @@ public class ForumController {
      */
     @RequestMapping(value = "/uploadimgs", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseJson multipleFilesUpload(HttpServletRequest request) {
+    public List<String> multipleFilesUpload(HttpServletRequest request) {
 
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         List<String> imageUrl = CollUtil.newArrayList();
@@ -49,11 +49,12 @@ public class ForumController {
             // key为前端的name属性，value为上传的对象（MultipartFile）
             for (Map.Entry<String, MultipartFile> entry : map.entrySet()) {
                 String s = FileUtil.uploadFile(entry.getValue(), fileSon);
+                Map<String,String> imgMap=CollUtil.newHashMap();
                 imageUrl.add(s);
             }
         }
-        responseJson.setSuccessResPonse(imageUrl);
-        return responseJson;
+//        responseJson.setSuccessResPonse(imageUrl);
+        return imageUrl;
     }
 
     /**

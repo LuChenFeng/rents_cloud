@@ -70,7 +70,7 @@ public class ForumServiceImpl implements ForumService {
         postsInfo.setGmtCreate(DateUtil.now());
         postsInfo.setGmtModified(DateUtil.now());
         int infoFlag = postsInfoMapper.insert(postsInfo);
-        if (postsInfo.getPostsImgs() == null || "".equals(postsInfo.getPostsImgs())) {
+        if ( postsInfo.getPostsImgs().size()<=0) {
             return infoFlag;
         }
         //用户有上传图片继续
@@ -145,7 +145,6 @@ public class ForumServiceImpl implements ForumService {
                 postDetail.setImgs(imgs);
             }
         }
-
         PostDetailsPage postDetailsPage=new PostDetailsPage();
         postDetailsPage.setPostDetails(postDetails);
         PostsInfoExample example=new PostsInfoExample();
