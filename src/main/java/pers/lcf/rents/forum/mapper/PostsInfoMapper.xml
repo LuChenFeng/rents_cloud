@@ -28,6 +28,7 @@
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
         <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
         <result column="sex" jdbcType="CHAR" property="sex"/>
+        <result column="has_real_name" jdbcType="TINYINT" property="hasRealName" />
         <result column="birthady" jdbcType="TIMESTAMP" property="birthady"/>
     </resultMap>
     <resultMap extends="PostsUserMap" id="PostsDetailMap" type="pers.lcf.rents.forum.model.PostDetails">
@@ -128,6 +129,7 @@
         ui.user_name,
         ui.sex,
         ui.birthady,
+        ui.has_real_name,
         pi.*
     FROM
         `user_info` ui,
@@ -142,6 +144,7 @@
         pt.post_type_name,
         ui.avatar,
         ui.user_name,
+        ui.has_real_name,
         pi.*
         FROM
         `user_info` ui,

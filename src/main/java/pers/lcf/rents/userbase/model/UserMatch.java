@@ -10,10 +10,11 @@ import lombok.Data;
  * 匹配对象
  **/
 @Data
-public class UserMatch {
+public class UserMatch  {
     private String userName;
     private String avatar;
     private String sex;
+    private Byte hasRealName;
     private String statement;
     private Float similarity;
     private UserStyle userStyle;

@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pers.lcf.rents.userbase.model.UserInfo;
+import pers.lcf.rents.userbase.model.UserLoginAppInfo;
 import pers.lcf.rents.userbase.model.UserMatch;
 import pers.lcf.rents.userbase.model.UserStyle;
 import pers.lcf.rents.userbase.service.UserBaseService;
@@ -30,7 +31,8 @@ public class UserBaseController {
     private UserBaseService userBaseServiceImpl;
 
     @Autowired
-    private  ResponseJson responseJson;
+    private ResponseJson responseJson;
+
     /**
      * @Param: [userStyle]
      * @Return: pers.lcf.rents.utils.ResponseJson
@@ -39,10 +41,10 @@ public class UserBaseController {
      * 用户特点记录插入
      */
     @PostMapping("/style")
-    public ResponseJson insertUserStyle (@RequestBody UserStyle userStyle){
-       int flag= userBaseServiceImpl.insertUserStyle(userStyle);
-       responseJson.setResPonse(flag);
-       return responseJson;
+    public ResponseJson insertUserStyle(@RequestBody UserStyle userStyle) {
+        int flag = userBaseServiceImpl.insertUserStyle(userStyle);
+        responseJson.setResPonse(flag);
+        return responseJson;
     }
 
     /**
@@ -54,7 +56,7 @@ public class UserBaseController {
      */
     @PutMapping("/style")
     public ResponseJson updateUserStyle(@RequestBody UserStyle userStyle) {
-        int flag=userBaseServiceImpl.updateUserStyle(userStyle);
+        int flag = userBaseServiceImpl.updateUserStyle(userStyle);
         responseJson.setResPonse(flag);
         return responseJson;
     }
@@ -67,20 +69,20 @@ public class UserBaseController {
      * 根据userInfoId 查找用户特点记录
      */
     @GetMapping("/style")
-    public ResponseJson getStyleByUserInfoId( String userInfoId) {
-        List<UserStyle> userStyles=userBaseServiceImpl.getStyleByUserInfoId(userInfoId);
+    public ResponseJson getStyleByUserInfoId(String userInfoId) {
+        List<UserStyle> userStyles = userBaseServiceImpl.getStyleByUserInfoId(userInfoId);
         responseJson.setSuccessResPonse(userStyles);
         return responseJson;
     }
 
     @GetMapping("/matching")
-    public ResponseJson getRentsByLoadnum(int loadNum,String userInfoId){
-        List<UserStyle> userStyles=userBaseServiceImpl.getStyleByUserInfoId(userInfoId);
-        if(CollUtil.isEmpty(userStyles)){
+    public ResponseJson getRentsByLoadnum(int loadNum, String userInfoId) {
+        List<UserStyle> userStyles = userBaseServiceImpl.getStyleByUserInfoId(userInfoId);
+        if (CollUtil.isEmpty(userStyles)) {
             responseJson.setResPonseSelfMsg("先记录下你的特点");
             return responseJson;
         }
-       List<UserMatch> matchStyles= userBaseServiceImpl.getRentsByLoadnum(loadNum,userStyles);
+        List<UserMatch> matchStyles = userBaseServiceImpl.getRentsByLoadnum(loadNum, userStyles);
         responseJson.setSuccessResPonse(matchStyles);
         return responseJson;
     }
@@ -93,18 +95,30 @@ public class UserBaseController {
      * 头像上传
      */
     //处理单个文件上传
-    @RequestMapping(value="/uploadimg", method = RequestMethod.POST)
-    public  ResponseJson uploadImg(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+    @RequestMapping(value = "/uploadimg", method = RequestMethod.POST)
+    public ResponseJson uploadImg(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         String info = null;
-        String fileSon="avatarImage/";
-        List<String> imageUrl= CollUtil.newArrayList();
+        String fileSon = "avatarImage/";
+        List<String> imageUrl = CollUtil.newArrayList();
         try {
-            info = FileUtil.uploadFile(file,fileSon);
+            info = FileUtil.uploadFile(file, fileSon);
             imageUrl.add(info);
         } catch (Exception e) {
             e.printStackTrace();
         }
         responseJson.setSuccessResPonse(imageUrl);
+        return responseJson;
+    }
+
+    @PostMapping("/userLoginByAppInfo")
+    public ResponseJson userLoginByAppInfo(@RequestBody UserLoginAppInfo userLoginAppInfo) {
+        ResponseJson responseJson = userBaseServiceImpl.userLoginByAppInfo(userLoginAppInfo);
+        return responseJson;
+    }
+
+    @PostMapping("/userRegisteredByAppInfo")
+    public  ResponseJson userRegisteredByAppInfo(@RequestBody UserLoginAppInfo userLoginAppInfo){
+        ResponseJson responseJson=userBaseServiceImpl.userRegisteredByAppInfo(userLoginAppInfo);
         return responseJson;
     }
 

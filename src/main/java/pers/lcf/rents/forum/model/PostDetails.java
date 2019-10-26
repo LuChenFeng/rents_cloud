@@ -19,6 +19,7 @@ public class PostDetails {
     private String userName;
     private String avatar;
     private String sex;
+    private Byte hasRealName;
     private String birthady;
     private PostsInfo postsInfo;
     private List<String> imgs;

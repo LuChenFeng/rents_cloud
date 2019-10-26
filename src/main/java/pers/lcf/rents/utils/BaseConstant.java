@@ -7,18 +7,24 @@ package pers.lcf.rents.utils;
  * @Date 2019/10/4 14:30
  **/
 public class BaseConstant {
+    //用户信息--用户初始状态码
+    public static final byte STATE_NORMAL = 1;
+    //用户信息--初始实名
+    public static final byte REAL_NAME = 0;
+//    用户信息--初始头像
+    public static  final  String AVATAR_NORMAL="http://47.102.192.121:8000/rentsUpLoad/avatarImage/head.jpg";
 
     //室友匹配--步长值
     public static final Integer MATCH_STEP = 10;
     //室友匹配--指数最大差
     public static final float MATCH_SIMILAR = 20;
     //室友匹配--匹配参数个数
-    public static final float MATCH_NUM=5;
+    public static final float MATCH_NUM = 5;
 
     //linux下文件上传路径
     public static final String IMG_PATH = "/srv/rentsUpLoad/";
     //windows 文件上传测试路径
 //    public static  final  String IMG_PATH="D:/rentsUpLoad/";
-    public  static  final String IMG_URL="http://47.102.192.121:8000/rentsUpLoad/";
+    public static final String IMG_URL = "http://47.102.192.121:8000/rentsUpLoad/";
 
 }

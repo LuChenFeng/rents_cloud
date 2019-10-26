@@ -24,7 +24,6 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
          */
 
         registry.addResourceHandler("/rentsUpLoad/**").addResourceLocations("file:"+BaseConstant.IMG_PATH);
-
         super.addResourceHandlers(registry);
     }
 

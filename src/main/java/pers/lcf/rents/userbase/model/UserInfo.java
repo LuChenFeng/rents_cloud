@@ -10,6 +10,7 @@ public class UserInfo {
     private String id;
     private String userLoginId;
     private String rentsGroupId;
+    private Byte hasRealName;
     private String userName;
     private String avatar;
     private String sex;
