@@ -19,7 +19,7 @@ public interface PostsInfoMapper {
  */
     PostDetails getPostInfoById(String id);
 
-List<PostDetails> getPostDetailsByPage(PostDeatailsDTO postDetails );
+List<PostDetails> getPostDetailsByPage(PostDeatailsDTO postDeatailsDTO );
 
     long countByExample(PostsInfoExample example);
 

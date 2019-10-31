@@ -138,7 +138,7 @@
     WHERE  pi.id=#{id} and pi.user_info_id=ui.id and pi.post_type_id=pt.id
   </select>
 
-    <select id="getPostDetailsByPage" resultMap="PostsDetailMap" parameterType="pers.lcf.rents.forum.model.PostDetails">
+    <select id="getPostDetailsByPage" resultMap="PostsDetailMap" parameterType="pers.lcf.rents.forum.model.PostDeatailsDTO">
         SELECT
         pi.id posts_id,
         pt.post_type_name,
@@ -160,6 +160,9 @@
             </if>
             <if test="city !=null">
                 and pi.location_address like '%${city}%'
+            </if>
+            <if test="isHave!=null">
+                and pt.is_have=#{isHave}
             </if>
             and pi.user_info_id=ui.id and pi.post_type_id=pt.id
         </where>

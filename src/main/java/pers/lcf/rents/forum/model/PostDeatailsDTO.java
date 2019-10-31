@@ -16,5 +16,6 @@ public class PostDeatailsDTO extends pageDTO {
     private  Integer  start;
     private  Integer end;
     private  Integer pageNum;
+    private  Byte isHave;
 
 }

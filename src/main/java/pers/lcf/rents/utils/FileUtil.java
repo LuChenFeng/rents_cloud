@@ -1,11 +1,17 @@
 package pers.lcf.rents.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName FileUtil
@@ -47,6 +53,27 @@ public class FileUtil {
             }
         }
         return BaseConstant.IMG_URL+fileSon+fileName;
+    }
+/**
+ * @Param: [request, fileSon]
+ * @Return: java.util.List<java.lang.String>
+ * @Author: lcf
+ * @Date: 2019/10/30 19:58
+ * 多文件上传公用方法
+ */
+    public static List<String> multipleFilesUpload(HttpServletRequest request, String fileSon) {
+        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+        List<String> imageUrl = CollUtil.newArrayList();
+        if (commonsMultipartResolver.isMultipart(request)) {
+            MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request;
+            Map<String, MultipartFile> map = mulReq.getFileMap();
+            // key为前端的name属性，value为上传的对象（MultipartFile）
+            for (Map.Entry<String, MultipartFile> entry : map.entrySet()) {
+                String s = FileUtil.uploadFile(entry.getValue(), fileSon);
+                imageUrl.add(s);
+            }
+        }
+        return imageUrl;
     }
 
 }

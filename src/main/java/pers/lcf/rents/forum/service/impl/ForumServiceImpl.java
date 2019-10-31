@@ -188,7 +188,7 @@ public class ForumServiceImpl implements ForumService {
         postsReport.setId(IdUtil.simpleUUID());
         postsReport.setGmtCreate(DateUtil.now());
         postsReport.setGmtModified(DateUtil.now());
-        int flag = postsReportMapper.insert(postsReport);
+        int flag = postsReportMapper.insertSelective(postsReport);
         return flag;
     }
 
@@ -204,7 +204,7 @@ public class ForumServiceImpl implements ForumService {
         postsComment.setId(IdUtil.simpleUUID());
         postsComment.setGmtCreate(DateUtil.now());
         postsComment.setGmtModified(DateUtil.now());
-        int flag = postsCommentMapper.insert(postsComment);
+        int flag = postsCommentMapper.insertSelective(postsComment);
         return flag;
     }
 
@@ -233,7 +233,7 @@ public class ForumServiceImpl implements ForumService {
         postsReply.setId(IdUtil.simpleUUID());
         postsReply.setGmtCreate(DateUtil.now());
         postsReply.setGmtModified(DateUtil.now());
-        int flag = postsReplyMapper.insert(postsReply);
+        int flag = postsReplyMapper.insertSelective(postsReply);
         return flag;
     }
 

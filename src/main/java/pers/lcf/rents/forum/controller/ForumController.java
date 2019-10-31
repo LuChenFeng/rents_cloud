@@ -36,25 +36,18 @@ public class ForumController {
      * @Date: 2019/10/5 20:21
      * 上传帖子图片 多图片上传
      */
-    @RequestMapping(value = "/uploadimgs", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadPostImgs", method = RequestMethod.POST)
     @ResponseBody
-    public List<String> multipleFilesUpload(HttpServletRequest request) {
-
-        CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        List<String> imageUrl = CollUtil.newArrayList();
+    public List<String> uploadPostImgs(HttpServletRequest request) {
         String fileSon = "postsImage/";
-        if (commonsMultipartResolver.isMultipart(request)) {
-            MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request;
-            Map<String, MultipartFile> map = mulReq.getFileMap();
-            // key为前端的name属性，value为上传的对象（MultipartFile）
-            for (Map.Entry<String, MultipartFile> entry : map.entrySet()) {
-                String s = FileUtil.uploadFile(entry.getValue(), fileSon);
-                Map<String,String> imgMap=CollUtil.newHashMap();
-                imageUrl.add(s);
-            }
-        }
-//        responseJson.setSuccessResPonse(imageUrl);
-        return imageUrl;
+        return FileUtil.multipleFilesUpload(request,fileSon);
+    }
+
+    @RequestMapping(value = "/uploadReportImgs", method = RequestMethod.POST)
+    @ResponseBody
+    public List<String> uploadReportImgs(HttpServletRequest request) {
+        String fileSon = "postsReport/";
+        return FileUtil.multipleFilesUpload(request,fileSon);
     }
 
     /**
