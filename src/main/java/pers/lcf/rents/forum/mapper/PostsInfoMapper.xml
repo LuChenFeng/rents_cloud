@@ -164,6 +164,9 @@
             <if test="isHave!=null">
                 and pt.is_have=#{isHave}
             </if>
+            <if test="userInfoId!=null">
+                and ui.id=#{userInfoId}
+            </if>
             and pi.user_info_id=ui.id and pi.post_type_id=pt.id
         </where>
         ORDER BY pi.gmt_create desc limit #{start},#{end}

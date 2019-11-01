@@ -33,6 +33,18 @@ public class UserBaseController {
     @Autowired
     private ResponseJson responseJson;
 
+    @PostMapping("/userInfo")
+    public ResponseJson updataUserInfoById(@RequestBody UserInfo userInfo) {
+        int flag = userBaseServiceImpl.updataUserInfoById(userInfo);
+        if (flag <= 0) {
+            responseJson.setResPonse(flag);
+            return responseJson;
+        }
+        List<UserInfo> userInfos = userBaseServiceImpl.getusreInfoById(userInfo.getId());
+        responseJson.setSuccessResPonse(userInfos);
+        return responseJson;
+    }
+
     /**
      * @Param: [userStyle]
      * @Return: pers.lcf.rents.utils.ResponseJson
@@ -75,6 +87,13 @@ public class UserBaseController {
         return responseJson;
     }
 
+    /**
+     * @Param: [loadNum, userInfoId]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/1 19:20
+     * 匹配用户
+     */
     @GetMapping("/matching")
     public ResponseJson getRentsByLoadnum(int loadNum, String userInfoId) {
         List<UserStyle> userStyles = userBaseServiceImpl.getStyleByUserInfoId(userInfoId);
@@ -110,15 +129,29 @@ public class UserBaseController {
         return responseJson;
     }
 
+    /**
+     * @Param: [userLoginAppInfo]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/1 19:17
+     * 用户登入
+     */
     @PostMapping("/userLoginByAppInfo")
     public ResponseJson userLoginByAppInfo(@RequestBody UserLoginAppInfo userLoginAppInfo) {
         ResponseJson responseJson = userBaseServiceImpl.userLoginByAppInfo(userLoginAppInfo);
         return responseJson;
     }
 
+    /**
+     * @Param: [userLoginAppInfo]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/1 19:17
+     * 用户注册
+     */
     @PostMapping("/userRegisteredByAppInfo")
-    public  ResponseJson userRegisteredByAppInfo(@RequestBody UserLoginAppInfo userLoginAppInfo){
-        ResponseJson responseJson=userBaseServiceImpl.userRegisteredByAppInfo(userLoginAppInfo);
+    public ResponseJson userRegisteredByAppInfo(@RequestBody UserLoginAppInfo userLoginAppInfo) {
+        ResponseJson responseJson = userBaseServiceImpl.userRegisteredByAppInfo(userLoginAppInfo);
         return responseJson;
     }
 

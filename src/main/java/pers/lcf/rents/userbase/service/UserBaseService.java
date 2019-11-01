@@ -9,6 +9,8 @@ import pers.lcf.rents.utils.ResponseJson;
 import java.util.List;
 
 public interface UserBaseService {
+   Integer  updataUserInfoById( UserInfo userInfo);
+   List<UserInfo> getusreInfoById(String id);
     Integer insertUserStyle(UserStyle userStyle);
     Integer updateUserStyle(UserStyle userStyle);
     List<UserStyle> getStyleByUserInfoId(String userInfoId);

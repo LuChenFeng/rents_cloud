@@ -43,6 +43,35 @@ public class UserBaseServiceImpl implements UserBaseService {
     private UserInfoMapper userInfoMapper;
 
     /**
+     * @Param: [userInfo]
+     * @Return: pers.lcf.rents.userbase.model.UserInfo
+     * @Author: lcf
+     * @Date: 2019/11/1 19:30
+     * 用户信息修改
+     */
+    @Override
+    public Integer updataUserInfoById(UserInfo userInfo) {
+        UserInfoExample example = new UserInfoExample();
+        UserInfoExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(userInfo.getId());
+        userInfo.setGmtModified(DateUtil.now());
+        int flag = userInfoMapper.updateByExampleSelective(userInfo, example);
+        return flag;
+    }
+
+    @Override
+    public List<UserInfo> getusreInfoById(String id) {
+        UserInfoExample example = new UserInfoExample();
+        UserInfoExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(id);
+   List<UserInfo>  userInfos=    userInfoMapper.selectByExample(example);
+   if(CollUtil.isEmpty(userInfos)){
+       return null;
+   }
+        return userInfos;
+    }
+
+    /**
      * @Param: [userStyle]
      * @Return: java.lang.Integer
      * @Author: lcf
@@ -152,7 +181,7 @@ public class UserBaseServiceImpl implements UserBaseService {
             float lastSimilarity = (float) (BaseConstant.MATCH_SIMILAR - (similarity / BaseConstant.MATCH_NUM)) / BaseConstant.MATCH_SIMILAR;
             userMatch.setSimilarity(lastSimilarity * 100);
         }
-//根据创建相似度降序排序
+        //根据创建相似度降序排序
         matchStyles.sort(Comparator.comparing(UserMatch::getSimilarity).reversed());
         return matchStyles;
     }
@@ -194,7 +223,7 @@ public class UserBaseServiceImpl implements UserBaseService {
 //        不是第三方时判断登入账号密码是否正确
 
         if (!userLoginAppInfo.getLoginMethod()) {
-            String pwd=SecureUtil.md5(userLoginAppInfo.getPassword());
+            String pwd = SecureUtil.md5(userLoginAppInfo.getPassword());
             if (!(userLoginAppInfo.getLoginName().equals(userLogins.get(0).getLoginName()) &&
                     userLogins.get(0).getPassword().equals(pwd))) {
                 responseJson.setResPonseSelfMsg("用户名/密码不正确");
@@ -204,7 +233,7 @@ public class UserBaseServiceImpl implements UserBaseService {
 
         UserInfo userInfo = userInfoMapper.getUserInfoByLoginId(userLoginAppInfo.getLoginName());
 
-      //登入成功时，返回用户信息
+        //登入成功时，返回用户信息
         responseJson.setSuccessResPonse(userInfo);
         return responseJson;
     }
@@ -277,7 +306,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         userLogin.setUserTypeId(userTypeId);
         userLogin.setLoginName(userLoginAppInfo.getLoginName());
         if (userLoginAppInfo.getPassword() != null || !("".equals(userLoginAppInfo.getPassword()))) {
-             String pwd= SecureUtil.md5(userLoginAppInfo.getPassword());
+            String pwd = SecureUtil.md5(userLoginAppInfo.getPassword());
             userLogin.setPassword(pwd);
         }
         userLogin.setIsState(BaseConstant.STATE_NORMAL);
