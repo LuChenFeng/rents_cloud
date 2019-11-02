@@ -33,6 +33,13 @@ public class UserBaseController {
     @Autowired
     private ResponseJson responseJson;
 
+    /**
+     * @Param: [userInfo]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/2 17:03
+     * 用户信息修改
+     */
     @PostMapping("/userInfo")
     public ResponseJson updataUserInfoById(@RequestBody UserInfo userInfo) {
         int flag = userBaseServiceImpl.updataUserInfoById(userInfo);
@@ -42,6 +49,24 @@ public class UserBaseController {
         }
         List<UserInfo> userInfos = userBaseServiceImpl.getusreInfoById(userInfo.getId());
         responseJson.setSuccessResPonse(userInfos);
+        return responseJson;
+    }
+
+    /**
+     * @Param: [userId]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/2 17:03
+     * 根据用户id返回用户详情页信息
+     */
+    @GetMapping("/userInfoStyle")
+    public ResponseJson getUserInfoStyleById(String id) {
+        List<UserMatch> userMatches=userBaseServiceImpl.getUserInfoStyleById(id);
+        if(CollUtil.isEmpty(userMatches)){
+            responseJson.setResPonseSelfMsg("获取失败");
+            return responseJson;
+        }
+        responseJson.setSuccessResPonse(userMatches);
         return responseJson;
     }
 

@@ -147,14 +147,18 @@ public class ForumServiceImpl implements ForumService {
         }
         PostDetailsPage postDetailsPage=new PostDetailsPage();
         postDetailsPage.setPostDetails(postDetails);
+
         PostsInfoExample example=new PostsInfoExample();
         PostsInfoExample.Criteria criteria=example.createCriteria();
 //        统计页数
         if( postDeatailsDTO.getCity()!=null){
             criteria.andLocationAddressLike('%'+postDeatailsDTO.getCity()+'%');
-            long pageTotal= postsInfoMapper.countByExample(example);
-            postDetailsPage.setPageTotal((long) PageUtil.totalPage((int) pageTotal,postDeatailsDTO.getPageSize()));
         }
+        if(postDeatailsDTO.getUserInfoId()!=null){
+            criteria.andUserInfoIdEqualTo(postDeatailsDTO.getUserInfoId());
+        }
+        long recordTotal= postsInfoMapper.countByExample(example);
+        postDetailsPage.setPageTotal((long) PageUtil.totalPage((int)recordTotal,postDeatailsDTO.getPageSize()));
         return postDetailsPage;
     }
 

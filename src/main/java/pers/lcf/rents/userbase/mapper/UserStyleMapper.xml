@@ -33,6 +33,7 @@
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
         <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
         <result column="sex" jdbcType="CHAR" property="sex"/>
+        <result column="birthady" jdbcType="TIMESTAMP" property="birthady"/>
         <result column="has_real_name" jdbcType="TINYINT" property="hasRealName" />
         <result column="statement" jdbcType="VARCHAR" property="statement" />
         <association property="userStyle"  resultMap="BaseResultMap"> </association>
@@ -85,6 +86,7 @@
 	ui.statement,
 	ui.sex,
 	ui.has_real_name,
+	ui.birthady,
 	us.*
   FROM
       `user_style` us ,

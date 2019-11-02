@@ -59,15 +59,31 @@ public class UserBaseServiceImpl implements UserBaseService {
         return flag;
     }
 
+    /**
+     * @Param: [id]
+     * @Return: pers.lcf.rents.userbase.model.UserMatch
+     * @Author: lcf
+     * @Date: 2019/11/2 17:06
+     * 用户详情页信息
+     */
+    @Override
+    public  List<UserMatch> getUserInfoStyleById(String id) {
+        UserStyleExample example = new UserStyleExample();
+        UserStyleExample.Criteria criteria = example.createCriteria();
+        criteria.andUserInfoIdEqualTo(id);
+        List<UserMatch> matchStyles = userStyleMapper.selectUserMatchByExample(example);
+        return matchStyles;
+    }
+
     @Override
     public List<UserInfo> getusreInfoById(String id) {
         UserInfoExample example = new UserInfoExample();
         UserInfoExample.Criteria criteria = example.createCriteria();
         criteria.andIdEqualTo(id);
-   List<UserInfo>  userInfos=    userInfoMapper.selectByExample(example);
-   if(CollUtil.isEmpty(userInfos)){
-       return null;
-   }
+        List<UserInfo> userInfos = userInfoMapper.selectByExample(example);
+        if (CollUtil.isEmpty(userInfos)) {
+            return null;
+        }
         return userInfos;
     }
 
@@ -142,7 +158,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         int sytleSum = 0;
         String city = null;
         String userInfoId = null;
-        List<Integer> styleFractions = null; //改用户性格指数列表
+        List<Integer> styleFractions = null; //该用户性格指数列表
         Iterator<UserStyle> iterator = userStyles.iterator();
         while (iterator.hasNext()) {
             UserStyle cStyle = iterator.next();
@@ -335,6 +351,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         if (userLoginAppInfo.getAvatar() != null || !("".equals(userLoginAppInfo.getAvatar()))) {
             userInfo.setAvatar(userLoginAppInfo.getAvatar());
         }
+        userInfo.setBirthady(DateUtil.now());
         userInfo.setAvatar(BaseConstant.AVATAR_NORMAL);
         userInfo.setHasRealName(BaseConstant.REAL_NAME);
         userInfo.setGmtCreate(DateUtil.now());
