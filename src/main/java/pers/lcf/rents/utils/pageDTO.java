@@ -15,4 +15,6 @@ public class pageDTO implements Serializable {
     private static final long serialVersionUID = -8315132785161566453L;
     private  Integer pageNo=1;
     private  Integer pageSize=4;
+    private  Integer totalCount;
+    private  Integer totalPage;
 }

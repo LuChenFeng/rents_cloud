@@ -1,14 +1,16 @@
 package pers.lcf.rents.userbase.mapper;
 
 import org.apache.ibatis.annotations.Param;
+import pers.lcf.rents.adminbase.model.OrdinaryUser;
+import pers.lcf.rents.adminbase.model.OrdinaryUserDTO;
 import pers.lcf.rents.userbase.model.UserInfo;
 import pers.lcf.rents.userbase.model.UserInfoExample;
 
 import java.util.List;
 
 public interface UserInfoMapper {
-
-UserInfo getUserInfoByLoginId(String loginName);
+   List<OrdinaryUser> getOrdinaryUsersByDTO(OrdinaryUserDTO ordinaryUserDTO);
+    UserInfo getUserInfoByLoginId(String loginName);
     long countByExample(UserInfoExample example);
     int deleteByExample(UserInfoExample example);
     int insert(UserInfo record);
