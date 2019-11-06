@@ -24,6 +24,7 @@ public class OrdinaryUser {
     private Integer reportSum;
     private Integer postsSum;
     private String gmtCreate;
+    private  String gmtCreateBegin;
+    private String gmtCreateEnd;
 
-  
 }

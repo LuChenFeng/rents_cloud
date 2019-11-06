@@ -14,5 +14,5 @@ import java.util.List;
  **/
 @Data
 public class OrdinaryUserDTO extends pageDTO {
-   private List<OrdinaryUser> OrdinaryUsers;
+   private List<OrdinaryUser> ordinaryUsers;
 }

@@ -32,7 +32,9 @@
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="report_sum" jdbcType="INTEGER" property="postsSum"/>
     </resultMap>
-
+    <resultMap id="CountMap" type="Integer">
+        <result column="count" jdbcType="INTEGER" javaType="Integer"/>
+    </resultMap>
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -104,23 +106,44 @@
     </sql>
     <!--    管理员 普通用户信息管理-->
     <select id="getOrdinaryUsersByDTO" parameterType="pers.lcf.rents.adminbase.model.OrdinaryUserDTO"
-            resultMap="OrdinaryUserMap">
-        SELECT
-            ui.id,
-            ul.login_name,
-            ui.user_name,
-            ui.avatar,
-            ui.sex,
-            ui.has_real_name,
-            ui.tel,
-            ui.birthady,
-            ul.is_state,
-            ui.report_sum,
-            ul.gmt_create,
-            (SELECT COUNT(*) AS id  FROM `posts_info` WHERE `posts_info`.user_info_id=ui.id) posts_sum
+            resultMap="OrdinaryUserMap,CountMap">
+        select SQL_CALC_FOUND_ROWS
+        ui.id,
+        ul.login_name,
+        ui.user_name,
+        ui.avatar,
+        ui.sex,
+        ui.has_real_name,
+        ui.tel,
+        ui.birthady,
+        ul.is_state,
+        ui.report_sum,
+        ul.gmt_create,
+        (SELECT COUNT(*) AS id FROM `posts_info` WHERE `posts_info`.user_info_id=ui.id) posts_sum
         FROM
-            `user_info` ui, `user_login` ul
-         WHERE ui.user_login_id=ul.id
+        `user_info` ui, `user_login` ul
+        <where>
+            <if test="OrdinaryUsers!= null">
+                <if test="OrdinaryUsers.get(0).OrdinaryUsers != null">
+                    AND ul.login_name like '%${OrdinaryUsers.get(0).OrdinaryUsers}%'
+                </if>
+                <if test="OrdinaryUsers.get(0).userName != null">
+                    AND ui.user_name like '%${OrdinaryUsers.get(0).userName}%'
+                </if>
+                <if test="OrdinaryUsers.get(0).sex != null">
+                    AND ui.sex =#{OrdinaryUsers.get(0).sex}
+                </if>
+                <if test="OrdinaryUsers.get(0).hasRealName != null">
+                    AND ui.has_real_name =#{OrdinaryUsers.get(0).hasRealName}
+                </if>
+                <if test="OrdinaryUsers.get(0).tel != null">
+                    AND ui.tel like '%${OrdinaryUsers.get(0).tel}%'
+                </if>
+            </if>
+
+        </where>
+        WHERE ui.user_login_id=ul.id LIMIT #{start}, #{end};
+        SELECT FOUND_ROWS() AS count ;
     </select>
     <select id="getUserInfoByLoginId" parameterType="String" resultMap="BaseResultMap">
     SELECT ui.* FROM `user_info` ui, `user_login` ul

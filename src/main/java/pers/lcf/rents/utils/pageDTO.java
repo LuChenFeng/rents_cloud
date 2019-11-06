@@ -17,4 +17,6 @@ public class pageDTO implements Serializable {
     private  Integer pageSize=4;
     private  Integer totalCount;
     private  Integer totalPage;
+    private Integer start;
+    private  Integer end;
 }
