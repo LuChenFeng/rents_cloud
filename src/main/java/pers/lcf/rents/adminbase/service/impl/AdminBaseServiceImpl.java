@@ -1,6 +1,7 @@
 package pers.lcf.rents.adminbase.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,25 @@ public class AdminBaseServiceImpl implements AdminBaseService {
     @Override
     public OrdinaryUserDTO getOrdinaryUsersByDTO(OrdinaryUserDTO ordinaryUserDTO) {
         int[] startEnd = PageUtil.transToStartEnd(ordinaryUserDTO.getPageNo(), ordinaryUserDTO.getPageSize());
-        ordinaryUserDTO.setStart(startEnd[0]);
-        ordinaryUserDTO.setEnd(startEnd[1]);
-        List<List<?>> dtoList = userInfoMapper.getOrdinaryUsersByDTO(ordinaryUserDTO);
+        OrdinaryUser user = ordinaryUserDTO.getOrdinaryUsers().get(0);
+
+//        判断时间范围，是否有选中时间
+        if (user.getGmtCreateBegin() != null && !("".equals(user.getGmtCreateBegin()))
+                && user.getGmtCreateEnd() != null && !("".equals(user.getGmtCreateEnd()))) {
+            Date dateBegin = DateUtil.parse(user.getGmtCreateBegin());
+            Date dateEnd = DateUtil.parse(user.getGmtCreateEnd());
+            if (dateBegin.compareTo(dateEnd) > 0) {
+                String date;
+                date = user.getGmtCreateBegin();
+                user.setGmtCreateBegin(user.getGmtCreateEnd());
+                user.setGmtCreateEnd(date);
+            }
+        } else {
+            user.setGmtCreateBegin(null);
+            user.setGmtCreateEnd(null);
+        }
+
+        List<List<?>> dtoList = userInfoMapper.getOrdinaryUsersByDTO(user, startEnd[0], startEnd[1]);
         List<OrdinaryUser> ordinaryUsers = (List<OrdinaryUser>) dtoList.get(0);
         OrdinaryUserDTO dto = new OrdinaryUserDTO();
         dto.setOrdinaryUsers(ordinaryUsers);
