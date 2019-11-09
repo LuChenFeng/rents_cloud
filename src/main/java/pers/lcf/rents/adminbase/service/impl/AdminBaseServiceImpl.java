@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import pers.lcf.rents.adminbase.model.OrdinaryUser;
 import pers.lcf.rents.adminbase.model.OrdinaryUserDTO;
+import pers.lcf.rents.adminbase.model.OrdinaryUsersPei;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
 import pers.lcf.rents.userbase.mapper.UserInfoMapper;
 import pers.lcf.rents.userbase.mapper.UserLoginMapper;
@@ -52,7 +53,7 @@ public class AdminBaseServiceImpl implements AdminBaseService {
     public OrdinaryUserDTO getOrdinaryUsersByDTO(OrdinaryUserDTO ordinaryUserDTO) {
         int[] startEnd = PageUtil.transToStartEnd(ordinaryUserDTO.getPageNo(), ordinaryUserDTO.getPageSize());
         OrdinaryUser user = ordinaryUserDTO.getOrdinaryUsers().get(0);
-
+        user.setUserTypeName("会员用户");
 //        判断时间范围，是否有选中时间
         if (user.getGmtCreateBegin() != null && !("".equals(user.getGmtCreateBegin()))
                 && user.getGmtCreateEnd() != null && !("".equals(user.getGmtCreateEnd()))) {
@@ -120,6 +121,29 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         int flag = userInfoMapper.delOrdinaryUserById(ids);
         return flag;
 
+    }
+
+    @Override
+    public OrdinaryUsersPei getOrdinaryUsersPei() {
+        OrdinaryUsersPei ordinaryUsersPei = userInfoMapper.getOrdinaryUsersPei();
+
+//        List<Map<String, Integer>> sex= CollUtil.newArrayList();
+
+        Map<String, Integer> sex = CollUtil.newHashMap();
+        sex.put("男", ordinaryUsersPei.getMan());
+        sex.put("女", ordinaryUsersPei.getWoman());
+        ordinaryUsersPei.setSex(sex);
+
+        Map<String, Integer> isState = CollUtil.newHashMap();
+        isState.put("正常",ordinaryUsersPei.getNormal());
+        isState.put("封号",ordinaryUsersPei.getUnnormal());
+        ordinaryUsersPei.setIsState(isState);
+
+        Map<String, Integer> hasRealName = CollUtil.newHashMap();
+        hasRealName.put("实名",ordinaryUsersPei.getYesreal());
+        hasRealName.put("未实名",ordinaryUsersPei.getNoreal());
+        ordinaryUsersPei.setHasRealName(hasRealName);
+        return ordinaryUsersPei;
     }
 
 

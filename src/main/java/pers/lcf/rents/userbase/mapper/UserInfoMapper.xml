@@ -35,6 +35,14 @@
     <resultMap id="CountMap" type="Integer">
         <result column="count" jdbcType="INTEGER" javaType="Integer"/>
     </resultMap>
+    <resultMap id="ordinaryUsersPeiMap" type="pers.lcf.rents.adminbase.model.OrdinaryUsersPei">
+        <result column="man" jdbcType="INTEGER" property="man"/>
+        <result column="woman" jdbcType="INTEGER" property="woman"/>
+        <result column="yesreal" jdbcType="INTEGER" property="yesreal"/>
+        <result column="noreal" jdbcType="INTEGER" property="noreal"/>
+        <result column="normal" jdbcType="INTEGER" property="normal"/>
+        <result column="unnormal" jdbcType="INTEGER" property="unnormal"/>
+    </resultMap>
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -121,9 +129,9 @@
         ul.gmt_create,
         (SELECT COUNT(*) AS id FROM `posts_info` WHERE `posts_info`.user_info_id=ui.id) posts_sum
         FROM
-        `user_info` ui, `user_login` ul
+        `user_info` ui, `user_login` ul , `user_type` ut
         <where>
-            ui.user_login_id=ul.id
+            ui.user_login_id=ul.id AND ut.id=ul.user_type_id AND ut.user_type_name=#{record.userTypeName}
             <if test="record.loginName != null and record.loginName != ''">
                 AND ul.login_name like '%${record.loginName}%'
             </if>
@@ -149,6 +157,25 @@
         </where>
         LIMIT #{start}, #{end};
         SELECT FOUND_ROWS() AS count ;
+    </select>
+<!--    普通用户饼图信息-->
+    <select id="getOrdinaryUsersPei" resultMap="ordinaryUsersPeiMap">
+        SELECT
+            ( SELECT COUNT( * ) AS id FROM `user_info` WHERE `user_info`.sex = '男' ) man,
+            ( SELECT COUNT( * ) AS id FROM `user_info` WHERE `user_info`.sex = '女' ) woman,
+            ( SELECT COUNT( * ) AS id FROM `user_info` WHERE `user_info`.has_real_name = 1 ) yesreal,
+            ( SELECT COUNT( * ) AS id FROM `user_info` WHERE `user_info`.has_real_name = 0 ) noreal,
+            ( SELECT COUNT( * ) AS id FROM `user_login` WHERE `user_login`.is_state = 1 ) normal ,
+            ( SELECT COUNT( * ) AS id FROM `user_login` WHERE `user_login`.is_state = 0 ) unnormal
+        FROM
+            `user_info` ui,
+            `user_login` ul,
+            `user_type` ut
+        WHERE
+            ui.user_login_id = ul.id
+            AND ut.id = ul.user_type_id
+            AND ut.user_type_name = '会员用户'
+            LIMIT 0,1;
     </select>
     <select id="getUserInfoByLoginId" parameterType="String" resultMap="BaseResultMap">
     SELECT ui.* FROM `user_info` ui, `user_login` ul

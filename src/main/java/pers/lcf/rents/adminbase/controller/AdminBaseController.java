@@ -1,11 +1,13 @@
 package pers.lcf.rents.adminbase.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import pers.lcf.rents.adminbase.model.OrdinaryUser;
 import pers.lcf.rents.adminbase.model.OrdinaryUserDTO;
+import pers.lcf.rents.adminbase.model.OrdinaryUsersPei;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
 import pers.lcf.rents.utils.ResponseJson;
 
@@ -61,6 +63,12 @@ public class AdminBaseController {
         List<String> userInfoIds = Arrays.asList(ids.split(","));
         int flag = adminBaseServiceImpl.delOrdinaryUserById(userInfoIds);
         responseJson.setResPonse(flag);
+        return responseJson;
+    }
+    @GetMapping("/ordinaryUsersPei")
+    public  ResponseJson getOrdinaryUsersPei(){
+        OrdinaryUsersPei ordinaryUsersPei=  adminBaseServiceImpl.getOrdinaryUsersPei();
+        responseJson.setSuccessResPonse(ordinaryUsersPei);
         return responseJson;
     }
 }

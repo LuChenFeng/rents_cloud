@@ -26,5 +26,6 @@ public class OrdinaryUser {
     private String gmtCreate;
     private  String gmtCreateBegin;
     private String gmtCreateEnd;
+    private  String userTypeName;
 
 }
