@@ -207,22 +207,18 @@
     -->
     update user_login
     <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=VARCHAR},
-      </if>
+
       <if test="record.userTypeId != null">
         user_type_id = #{record.userTypeId,jdbcType=VARCHAR},
       </if>
-      <if test="record.loginName != null">
-        login_name = #{record.loginName,jdbcType=VARCHAR},
-      </if>
+
       <if test="record.password != null">
         password = #{record.password,jdbcType=VARCHAR},
       </if>
       <if test="record.isState != null">
         is_state = #{record.isState,jdbcType=TINYINT},
       </if>
-      <if test="record.gmtCreate != null">
+      <if test="record.gmtCreate != null and record.gmtCreate != ''">
         gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       </if>
       <if test="record.gmtModified != null">

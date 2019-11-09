@@ -143,7 +143,7 @@
                 AND ui.tel like '%${record.tel}%'
             </if>
             <if test="record.gmtCreateBegin != null and record.gmtCreateEnd !=null ">
-                AND  ul.gmt_create  &gt; #{record.gmtCreateBegin} AND ul.gmt_create   &lt; #{record.gmtCreateEnd}
+                AND ul.gmt_create &gt; #{record.gmtCreateBegin} AND ul.gmt_create &lt; #{record.gmtCreateEnd}
             </if>
 
         </where>
@@ -172,6 +172,17 @@
             order by ${orderByClause}
         </if>
     </select>
+    <delete id="delOrdinaryUserById" parameterType="java.util.List">
+        DELETE user_info,user_login
+        FROM user_info
+        LEFT OUTER JOIN user_login
+        ON user_info.user_login_id=user_login.id
+        WHERE user_info.id
+        <foreach collection="list" item="item" index="index" separator="," open="in(" close=")">
+            #{item}
+        </foreach>
+
+    </delete>
     <delete id="deleteByExample" parameterType="pers.lcf.rents.userbase.model.UserInfoExample">
         <!--
           WARNING - @mbg.generated
@@ -327,7 +338,7 @@
             <if test="record.hasRealName != null">
                 has_real_name = #{record.hasRealName,jdbcType=TINYINT},
             </if>
-            <if test="record.birthady != null">
+            <if test="record.birthady != null and record.birthady !=''">
                 birthady = #{record.birthady,jdbcType=TIMESTAMP},
             </if>
             <if test="record.tel != null">
@@ -339,7 +350,7 @@
             <if test="record.reportSum != null">
                 report_sum = #{record.reportSum,jdbcType=INTEGER},
             </if>
-            <if test="record.gmtCreate != null">
+            <if test="record.gmtCreate != null and record.gmtCreate !=''">
                 gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
             </if>
             <if test="record.gmtModified != null">

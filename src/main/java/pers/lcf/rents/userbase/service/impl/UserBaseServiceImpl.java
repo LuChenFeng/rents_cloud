@@ -236,8 +236,11 @@ public class UserBaseServiceImpl implements UserBaseService {
             responseJson.setSuccessResPonse(userInfo);
             return responseJson;
         }
+        if((BaseConstant.IS_STATE)!= userLogins.get(0).getIsState()){
+            responseJson.setResPonseSelfMsg("你已被封号");
+            return responseJson;
+        }
 //        不是第三方时判断登入账号密码是否正确
-
         if (!userLoginAppInfo.getLoginMethod()) {
             String pwd = SecureUtil.md5(userLoginAppInfo.getPassword());
             if (!(userLoginAppInfo.getLoginName().equals(userLogins.get(0).getLoginName()) &&
@@ -246,7 +249,6 @@ public class UserBaseServiceImpl implements UserBaseService {
                 return responseJson;
             }
         }
-
         UserInfo userInfo = userInfoMapper.getUserInfoByLoginId(userLoginAppInfo.getLoginName());
 
         //登入成功时，返回用户信息
@@ -348,11 +350,12 @@ public class UserBaseServiceImpl implements UserBaseService {
         userInfo.setId(userInfoId);
         userInfo.setUserLoginId(loginId);
         userInfo.setUserName(userLoginAppInfo.getUserName());
-        if (userLoginAppInfo.getAvatar() != null || !("".equals(userLoginAppInfo.getAvatar()))) {
+        if (userLoginAppInfo.getAvatar() != null && !("".equals(userLoginAppInfo.getAvatar()))) {
             userInfo.setAvatar(userLoginAppInfo.getAvatar());
+        }else{
+            userInfo.setAvatar(BaseConstant.AVATAR_NORMAL);
         }
         userInfo.setBirthady(DateUtil.now());
-        userInfo.setAvatar(BaseConstant.AVATAR_NORMAL);
         userInfo.setHasRealName(BaseConstant.REAL_NAME);
         userInfo.setGmtCreate(DateUtil.now());
         userInfo.setGmtModified(DateUtil.now());

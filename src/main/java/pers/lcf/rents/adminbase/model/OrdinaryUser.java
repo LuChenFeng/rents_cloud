@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 public class OrdinaryUser {
    
-    private String id;
+    private String id; //用户信息表中的id
     private String loginName;
     private String userName;
     private String avatar;

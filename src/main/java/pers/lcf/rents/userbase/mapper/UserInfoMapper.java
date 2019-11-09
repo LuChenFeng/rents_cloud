@@ -11,7 +11,9 @@ import java.util.List;
 
 
 public interface UserInfoMapper {
-    List<List<?>> getOrdinaryUsersByDTO(@Param("record") OrdinaryUser ordinaryUser,@Param("start") Integer  start,@Param("end") Integer  end);
+    List<List<?>> getOrdinaryUsersByDTO(@Param("record") OrdinaryUser ordinaryUser, @Param("start") Integer start, @Param("end") Integer end);
+
+    Integer delOrdinaryUserById(@Param("list") List<String> ids);
 
     UserInfo getUserInfoByLoginId(String loginName);
 

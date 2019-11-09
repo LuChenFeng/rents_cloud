@@ -11,8 +11,11 @@ public class BaseConstant {
     public static final byte STATE_NORMAL = 1;
     //用户信息--初始实名
     public static final byte REAL_NAME = 0;
-//    用户信息--初始头像
-    public static  final  String AVATAR_NORMAL="http://47.102.192.121:8000/rentsUpLoad/avatarImage/head.jpg";
+
+    //    用户状态 1 正常
+    public static final byte IS_STATE = 1;
+    //    用户信息--初始头像
+    public static final String AVATAR_NORMAL = "http://47.102.192.121:8000/rents/rentsUpLoad/avatarImage/head.jpg";
 
     //室友匹配--步长值
     public static final Integer MATCH_STEP = 10;
