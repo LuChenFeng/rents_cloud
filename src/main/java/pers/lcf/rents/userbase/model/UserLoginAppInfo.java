@@ -17,4 +17,5 @@ public class UserLoginAppInfo {
     private String loginName;
     private String userName;
     private String avatar;
+    private  String tel;
 }

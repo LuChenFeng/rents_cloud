@@ -1,19 +1,20 @@
 package pers.lcf.rents.adminbase.service;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import pers.lcf.rents.adminbase.model.OrdinaryUser;
-import pers.lcf.rents.adminbase.model.OrdinaryUser;
-import pers.lcf.rents.adminbase.model.OrdinaryUserDTO;
+import pers.lcf.rents.adminbase.model.User;
+import pers.lcf.rents.adminbase.model.UserDTO;
 import pers.lcf.rents.adminbase.model.OrdinaryUsersPei;
 
 import java.util.List;
 
 public interface AdminBaseService {
-    OrdinaryUserDTO getOrdinaryUsersByDTO(OrdinaryUserDTO userInfoPage);
+    UserDTO getOrdinaryUsersByDTO(UserDTO userInfoPage);
 
-    Integer updateOrdinaryUser(OrdinaryUser ordinaryUser);
+    UserDTO getAdminUsersDTO(UserDTO userInfoPage);
+
+    Integer updateOrdinaryUser(User user);
 
     Integer delOrdinaryUserById(List<String> ids);
 
     OrdinaryUsersPei getOrdinaryUsersPei();
+
 }

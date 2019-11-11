@@ -349,11 +349,19 @@ public class UserBaseServiceImpl implements UserBaseService {
         UserInfo userInfo = new UserInfo();
         userInfo.setId(userInfoId);
         userInfo.setUserLoginId(loginId);
-        userInfo.setUserName(userLoginAppInfo.getUserName());
+
+        if (userLoginAppInfo.getUserName() != null && !("".equals(userLoginAppInfo.getUserName()))) {
+            userInfo.setUserName(userLoginAppInfo.getUserName());
+        }else{
+            userInfo.setUserName(userLoginAppInfo.getUserName());
+        }
         if (userLoginAppInfo.getAvatar() != null && !("".equals(userLoginAppInfo.getAvatar()))) {
             userInfo.setAvatar(userLoginAppInfo.getAvatar());
         }else{
             userInfo.setAvatar(BaseConstant.AVATAR_NORMAL);
+        }
+        if(userLoginAppInfo.getTel()!=null && !"".equals(userLoginAppInfo.getTel())){
+            userInfo.setTel(userLoginAppInfo.getTel());
         }
         userInfo.setBirthady(DateUtil.now());
         userInfo.setHasRealName(BaseConstant.REAL_NAME);

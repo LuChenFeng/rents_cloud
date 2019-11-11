@@ -10,7 +10,7 @@ import java.util.Date;
  * @Date: 2019/11/5 22:57
  */
 @Data
-public class OrdinaryUser {
+public class User {
    
     private String id; //用户信息表中的id
     private String loginName;
@@ -24,6 +24,7 @@ public class OrdinaryUser {
     private Integer reportSum;
     private Integer postsSum;
     private String gmtCreate;
+    private String gmtModified;
     private  String gmtCreateBegin;
     private String gmtCreateEnd;
     private  String userTypeName;

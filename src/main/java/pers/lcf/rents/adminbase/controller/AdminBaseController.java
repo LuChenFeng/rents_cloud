@@ -1,19 +1,17 @@
 package pers.lcf.rents.adminbase.controller;
 
-import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
-import pers.lcf.rents.adminbase.model.OrdinaryUser;
-import pers.lcf.rents.adminbase.model.OrdinaryUserDTO;
+import pers.lcf.rents.adminbase.model.User;
+import pers.lcf.rents.adminbase.model.UserDTO;
 import pers.lcf.rents.adminbase.model.OrdinaryUsersPei;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
 import pers.lcf.rents.utils.ResponseJson;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName AdminBaseController
@@ -31,29 +29,29 @@ public class AdminBaseController {
     private AdminBaseService adminBaseServiceImpl;
 
     /**
-     * @Param: [ordinaryUserDTO]
+     * @Param: [userDTO]
      * @Return: pers.lcf.rents.utils.ResponseJson
      * @Author: lcf
      * @Date: 2019/11/9 14:29
      * 普通用户分页查询
      */
     @PostMapping("/getOrdinaryUsers")
-    public ResponseJson getOrdinaryUsersByDTO(@RequestBody OrdinaryUserDTO ordinaryUserDTO) {
-        OrdinaryUserDTO dto = adminBaseServiceImpl.getOrdinaryUsersByDTO(ordinaryUserDTO);
+    public ResponseJson getOrdinaryUsersByDTO(@RequestBody UserDTO userDTO) {
+        UserDTO dto = adminBaseServiceImpl.getOrdinaryUsersByDTO(userDTO);
         responseJson.setSuccessResPonse(dto);
         return responseJson;
     }
 
     /**
-     * @Param: [ordinaryUser]
+     * @Param: [user]
      * @Return: pers.lcf.rents.utils.ResponseJson
      * @Author: lcf
      * @Date: 2019/11/9 14:29
      * 普通用户信息修改
      */
     @PutMapping("/ordinaryUsers")
-    public ResponseJson updateOrdinaryUser(@RequestBody OrdinaryUser ordinaryUser) {
-        int flag = adminBaseServiceImpl.updateOrdinaryUser(ordinaryUser);
+    public ResponseJson updateOrdinaryUser(@RequestBody User user) {
+        int flag = adminBaseServiceImpl.updateOrdinaryUser(user);
         responseJson.setResPonse(flag);
         return responseJson;
     }
@@ -71,4 +69,19 @@ public class AdminBaseController {
         responseJson.setSuccessResPonse(ordinaryUsersPei);
         return responseJson;
     }
+
+    @PostMapping("/adminUsers")
+    public  ResponseJson getAdminUsersDTO(@RequestBody UserDTO userDTO){
+        UserDTO dto = adminBaseServiceImpl.getAdminUsersDTO(userDTO);
+        responseJson.setSuccessResPonse(dto);
+        return responseJson;
+    }
+    @PutMapping("/adminUsers")
+    public  ResponseJson updataAdminUsersDTO(@RequestBody User user){
+        int flag = adminBaseServiceImpl.updateOrdinaryUser(user);
+        responseJson.setResPonse(flag);
+        return responseJson;
+    }
+
+
 }

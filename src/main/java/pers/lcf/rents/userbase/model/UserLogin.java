@@ -11,6 +11,7 @@ public class UserLogin {
     private String loginName;
     private String password;
     private Byte isState;
+    private  String tel;
     private String gmtCreate;
     private String gmtModified;
 }

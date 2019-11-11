@@ -1,7 +1,6 @@
 package pers.lcf.rents.adminbase.model;
 
 import lombok.Data;
-import pers.lcf.rents.userbase.model.UserInfo;
 import pers.lcf.rents.utils.pageDTO;
 
 import java.util.List;
@@ -13,6 +12,6 @@ import java.util.List;
  * @Date 2019/11/5 9:50
  **/
 @Data
-public class OrdinaryUserDTO extends pageDTO {
-   private List<OrdinaryUser> ordinaryUsers;
+public class UserDTO extends pageDTO {
+   private List<User> users;
 }

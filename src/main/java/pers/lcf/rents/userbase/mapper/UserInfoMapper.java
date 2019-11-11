@@ -1,21 +1,18 @@
 package pers.lcf.rents.userbase.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import pers.lcf.rents.adminbase.model.OrdinaryUser;
-import pers.lcf.rents.adminbase.model.OrdinaryUserDTO;
+import pers.lcf.rents.adminbase.model.User;
 import pers.lcf.rents.adminbase.model.OrdinaryUsersPei;
 import pers.lcf.rents.userbase.model.UserInfo;
 import pers.lcf.rents.userbase.model.UserInfoExample;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 
 public interface UserInfoMapper {
 
     OrdinaryUsersPei getOrdinaryUsersPei();
-    List<List<?>> getOrdinaryUsersByDTO(@Param("record") OrdinaryUser ordinaryUser, @Param("start") Integer start, @Param("end") Integer end);
+    List<List<?>> getOrdinaryUsersByDTO(@Param("record") User user, @Param("start") Integer start, @Param("end") Integer end);
 
     Integer delOrdinaryUserById(@Param("list") List<String> ids);
 
