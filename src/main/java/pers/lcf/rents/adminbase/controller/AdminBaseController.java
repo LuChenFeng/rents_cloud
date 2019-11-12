@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+
+import pers.lcf.rents.adminbase.model.PostsReportDTO;
 import pers.lcf.rents.adminbase.model.User;
 import pers.lcf.rents.adminbase.model.UserDTO;
 import pers.lcf.rents.adminbase.model.OrdinaryUsersPei;
@@ -83,5 +85,11 @@ public class AdminBaseController {
         return responseJson;
     }
 
-
+    @PostMapping("/getPostsReports")
+    public ResponseJson getPostsReportsByDTO(@RequestBody PostsReportDTO postsReportDTO) {
+        PostsReportDTO dto = adminBaseServiceImpl.getPostsReportsByDTO(postsReportDTO);
+        responseJson.setSuccessResPonse(dto);
+        return responseJson;
+//        return  null;
+    }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 public interface UserInfoMapper {
 
     OrdinaryUsersPei getOrdinaryUsersPei();
+
     List<List<?>> getOrdinaryUsersByDTO(@Param("record") User user, @Param("start") Integer start, @Param("end") Integer end);
 
     Integer delOrdinaryUserById(@Param("list") List<String> ids);

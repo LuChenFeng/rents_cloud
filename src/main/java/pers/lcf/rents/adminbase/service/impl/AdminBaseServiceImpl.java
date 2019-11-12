@@ -6,16 +6,16 @@ import cn.hutool.core.util.PageUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pers.lcf.rents.adminbase.model.User;
-import pers.lcf.rents.adminbase.model.UserDTO;
-import pers.lcf.rents.adminbase.model.OrdinaryUsersPei;
+import pers.lcf.rents.adminbase.model.*;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
+import pers.lcf.rents.forum.mapper.PostsReportMapper;
 import pers.lcf.rents.userbase.mapper.UserInfoMapper;
 import pers.lcf.rents.userbase.mapper.UserLoginMapper;
 import pers.lcf.rents.userbase.model.UserInfo;
 import pers.lcf.rents.userbase.model.UserLogin;
 import pers.lcf.rents.userbase.model.UserLoginExample;
 import pers.lcf.rents.userbase.service.UserBaseService;
+import pers.lcf.rents.utils.RentsUtil;
 
 import java.util.*;
 
@@ -35,8 +35,35 @@ public class AdminBaseServiceImpl implements AdminBaseService {
 
     @Autowired
     UserBaseService userBaseServiceImpl;
-    private int flagUl;
-    private int flag;
+    @Autowired
+    PostsReportMapper postsReportMapper;
+
+
+    @Override
+    public PostsReportDTO getPostsReportsByDTO(PostsReportDTO postsReportDTO) {
+                int[] startEnd = PageUtil.transToStartEnd(postsReportDTO.getPageNo(), postsReportDTO.getPageSize());
+        Report report = postsReportDTO.getReports().get(0);
+
+//        判断时间范围，是否有选中时间
+        String times[]={report.getGmtCreateBegin(),report.getGmtCreateEnd()};
+        String selectTime[]= RentsUtil.selectTime(times);
+        report.setGmtCreateBegin(selectTime[0]);
+        report.setGmtCreateEnd(selectTime[1]);
+
+        List<List<?>> dtoList = postsReportMapper.getPostsReportsByDTO(report, startEnd[0], startEnd[1]);
+        List<Report> reports = (List<Report>) dtoList.get(0);
+        PostsReportDTO dto = new PostsReportDTO();
+        dto.setReports(reports);
+        List<Integer> count = (List<Integer>) dtoList.get(1);
+        int totalCount = count.get(0);
+        int totalPage = PageUtil.totalPage(totalCount, postsReportDTO.getPageSize());
+        dto.setTotalCount(totalCount);
+        dto.setTotalPage(totalPage);
+        dto.setPageNo(postsReportDTO.getPageNo());
+        dto.setPageSize(postsReportDTO.getPageSize());
+        return dto;
+//        return null;
+    }
 
     /**
      * @Param: [userDTO]
@@ -130,20 +157,25 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         User user = userDTO.getUsers().get(0);
         user.setUserTypeName(type);
 //        判断时间范围，是否有选中时间
-        if (user.getGmtCreateBegin() != null && !("".equals(user.getGmtCreateBegin()))
-                && user.getGmtCreateEnd() != null && !("".equals(user.getGmtCreateEnd()))) {
-            Date dateBegin = DateUtil.parse(user.getGmtCreateBegin());
-            Date dateEnd = DateUtil.parse(user.getGmtCreateEnd());
-            if (dateBegin.compareTo(dateEnd) > 0) {
-                String date;
-                date = user.getGmtCreateBegin();
-                user.setGmtCreateBegin(user.getGmtCreateEnd());
-                user.setGmtCreateEnd(date);
-            }
-        } else {
-            user.setGmtCreateBegin(null);
-            user.setGmtCreateEnd(null);
-        }
+//        if (user.getGmtCreateBegin() != null && !("".equals(user.getGmtCreateBegin()))
+//                && user.getGmtCreateEnd() != null && !("".equals(user.getGmtCreateEnd()))) {
+//            Date dateBegin = DateUtil.parse(user.getGmtCreateBegin());
+//            Date dateEnd = DateUtil.parse(user.getGmtCreateEnd());
+//            if (dateBegin.compareTo(dateEnd) > 0) {
+//                String date;
+//                date = user.getGmtCreateBegin();
+//                user.setGmtCreateBegin(user.getGmtCreateEnd());
+//                user.setGmtCreateEnd(date);
+//            }
+//        } else {
+//            user.setGmtCreateBegin(null);
+//            user.setGmtCreateEnd(null);
+//        }
+
+        String times[]={user.getGmtCreateBegin(),user.getGmtCreateEnd()};
+        String selectTime[]= RentsUtil.selectTime(times);
+        user.setGmtCreateBegin(selectTime[0]);
+        user.setGmtCreateEnd(selectTime[1]);
 
         List<List<?>> dtoList = userInfoMapper.getOrdinaryUsersByDTO(user, startEnd[0], startEnd[1]);
         List<User> users = (List<User>) dtoList.get(0);
