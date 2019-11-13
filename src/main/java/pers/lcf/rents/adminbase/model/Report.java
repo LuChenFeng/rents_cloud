@@ -20,8 +20,8 @@ public class Report {
     private String reportImg1;
     private String reportImg2;
     private String gmtModified;
-    private Boolean reportSum;
-    private Boolean hasHandle;
+    private Integer reportSum;
+    private Byte hasHandle;
     private  String gmtCreateBegin;
     private String gmtCreateEnd;
 }

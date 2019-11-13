@@ -30,4 +30,5 @@ public class BaseConstant {
 //    public static  final  String IMG_PATH="D:/rentsUpLoad/";
     public static final String IMG_URL = "http://47.102.192.121:8000/rents/rentsUpLoad/";
 
+    public static final Byte YES_HAS_HANDLE=1;
 }

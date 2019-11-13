@@ -5,10 +5,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 
-import pers.lcf.rents.adminbase.model.PostsReportDTO;
-import pers.lcf.rents.adminbase.model.User;
-import pers.lcf.rents.adminbase.model.UserDTO;
-import pers.lcf.rents.adminbase.model.OrdinaryUsersPei;
+import pers.lcf.rents.adminbase.model.*;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
 import pers.lcf.rents.utils.ResponseJson;
 
@@ -85,11 +82,24 @@ public class AdminBaseController {
         return responseJson;
     }
 
+    /**
+     * @Param: [postsReportDTO]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/13 20:51
+     * 帖子举报分页查
+     */
     @PostMapping("/getPostsReports")
     public ResponseJson getPostsReportsByDTO(@RequestBody PostsReportDTO postsReportDTO) {
         PostsReportDTO dto = adminBaseServiceImpl.getPostsReportsByDTO(postsReportDTO);
         responseJson.setSuccessResPonse(dto);
         return responseJson;
-//        return  null;
+    }
+
+    @PutMapping("/postsReports")
+    public  ResponseJson updatePostsReports(@RequestBody Report report){
+        Integer flag=adminBaseServiceImpl.updatePostsReports(report);
+        responseJson.setResPonse(flag);
+        return responseJson;
     }
 }

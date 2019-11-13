@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 import pers.lcf.rents.adminbase.model.*;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
 import pers.lcf.rents.forum.mapper.PostsReportMapper;
+import pers.lcf.rents.forum.model.PostsReport;
+import pers.lcf.rents.forum.model.PostsReportExample;
 import pers.lcf.rents.userbase.mapper.UserInfoMapper;
 import pers.lcf.rents.userbase.mapper.UserLoginMapper;
 import pers.lcf.rents.userbase.model.UserInfo;
+import pers.lcf.rents.userbase.model.UserInfoExample;
 import pers.lcf.rents.userbase.model.UserLogin;
 import pers.lcf.rents.userbase.model.UserLoginExample;
 import pers.lcf.rents.userbase.service.UserBaseService;
+import pers.lcf.rents.utils.BaseConstant;
 import pers.lcf.rents.utils.RentsUtil;
 
 import java.util.*;
@@ -41,12 +45,12 @@ public class AdminBaseServiceImpl implements AdminBaseService {
 
     @Override
     public PostsReportDTO getPostsReportsByDTO(PostsReportDTO postsReportDTO) {
-                int[] startEnd = PageUtil.transToStartEnd(postsReportDTO.getPageNo(), postsReportDTO.getPageSize());
+        int[] startEnd = PageUtil.transToStartEnd(postsReportDTO.getPageNo(), postsReportDTO.getPageSize());
         Report report = postsReportDTO.getReports().get(0);
 
 //        判断时间范围，是否有选中时间
-        String times[]={report.getGmtCreateBegin(),report.getGmtCreateEnd()};
-        String selectTime[]= RentsUtil.selectTime(times);
+        String times[] = {report.getGmtCreateBegin(), report.getGmtCreateEnd()};
+        String selectTime[] = RentsUtil.selectTime(times);
         report.setGmtCreateBegin(selectTime[0]);
         report.setGmtCreateEnd(selectTime[1]);
 
@@ -66,6 +70,42 @@ public class AdminBaseServiceImpl implements AdminBaseService {
     }
 
     /**
+     * @Param: [report]
+     * @Return: java.lang.Integer
+     * @Author: lcf
+     * @Date: 2019/11/13 20:55
+     * 帖子举报修改
+     */
+    @Override
+    public Integer updatePostsReports(Report report) {
+        if (report.getHasHandle() == BaseConstant.YES_HAS_HANDLE) {
+            return 0;
+        }
+
+        PostsReport postsReport = new PostsReport();
+        postsReport.setHasHandle(BaseConstant.YES_HAS_HANDLE);
+        postsReport.setGmtModified(DateUtil.now());
+        PostsReportExample examplepr = new PostsReportExample();
+        PostsReportExample.Criteria criteriapr = examplepr.createCriteria();
+        criteriapr.andIdEqualTo(report.getId());
+        Integer flagpr = postsReportMapper.updateByExampleSelective(postsReport, examplepr);
+        if (flagpr <= 0) {
+            return 0;
+        }
+
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setReportSum(report.getReportSum() + 1);
+        userInfo.setGmtModified(DateUtil.now());
+        UserInfoExample exampleui = new UserInfoExample();
+        UserInfoExample.Criteria criteriaui = exampleui.createCriteria();
+        criteriaui.andIdEqualTo(report.getReleaseId());
+        Integer flagui = userInfoMapper.updateByExampleSelective(userInfo, exampleui);
+
+        return flagui;
+    }
+
+    /**
      * @Param: [userDTO]
      * @Return: pers.lcf.rents.adminbase.model.UserDTO
      * @Author: lcf
@@ -74,19 +114,20 @@ public class AdminBaseServiceImpl implements AdminBaseService {
      */
     @Override
     public UserDTO getOrdinaryUsersByDTO(UserDTO userDTO) {
-        UserDTO dto=getuserDTO(userDTO,"会员用户");
+        UserDTO dto = getuserDTO(userDTO, "会员用户");
         return dto;
     }
-/**
- * @Param: [userDTO]
- * @Return: pers.lcf.rents.adminbase.model.UserDTO
- * @Author: lcf
- * @Date: 2019/11/10 12:35
- * 管理员分页查询
- */
+
+    /**
+     * @Param: [userDTO]
+     * @Return: pers.lcf.rents.adminbase.model.UserDTO
+     * @Author: lcf
+     * @Date: 2019/11/10 12:35
+     * 管理员分页查询
+     */
     @Override
     public UserDTO getAdminUsersDTO(UserDTO userDTO) {
-        UserDTO dto=getuserDTO(userDTO,"管理员");
+        UserDTO dto = getuserDTO(userDTO, "管理员");
         return dto;
     }
 
@@ -141,18 +182,18 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         ordinaryUsersPei.setSex(sex);
 
         Map<String, Integer> isState = CollUtil.newHashMap();
-        isState.put("正常",ordinaryUsersPei.getNormal());
-        isState.put("封号",ordinaryUsersPei.getUnnormal());
+        isState.put("正常", ordinaryUsersPei.getNormal());
+        isState.put("封号", ordinaryUsersPei.getUnnormal());
         ordinaryUsersPei.setIsState(isState);
 
         Map<String, Integer> hasRealName = CollUtil.newHashMap();
-        hasRealName.put("实名",ordinaryUsersPei.getYesreal());
-        hasRealName.put("未实名",ordinaryUsersPei.getNoreal());
+        hasRealName.put("实名", ordinaryUsersPei.getYesreal());
+        hasRealName.put("未实名", ordinaryUsersPei.getNoreal());
         ordinaryUsersPei.setHasRealName(hasRealName);
         return ordinaryUsersPei;
     }
 
-    private UserDTO getuserDTO( UserDTO userDTO,String type){
+    private UserDTO getuserDTO(UserDTO userDTO, String type) {
         int[] startEnd = PageUtil.transToStartEnd(userDTO.getPageNo(), userDTO.getPageSize());
         User user = userDTO.getUsers().get(0);
         user.setUserTypeName(type);
@@ -172,8 +213,8 @@ public class AdminBaseServiceImpl implements AdminBaseService {
 //            user.setGmtCreateEnd(null);
 //        }
 
-        String times[]={user.getGmtCreateBegin(),user.getGmtCreateEnd()};
-        String selectTime[]= RentsUtil.selectTime(times);
+        String times[] = {user.getGmtCreateBegin(), user.getGmtCreateEnd()};
+        String selectTime[] = RentsUtil.selectTime(times);
         user.setGmtCreateBegin(selectTime[0]);
         user.setGmtCreateEnd(selectTime[1]);
 

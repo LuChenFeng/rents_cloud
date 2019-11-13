@@ -139,7 +139,7 @@
 	pr.posts_info_id,
 	ui.id release_id,
 	ui.user_name release_name,
-
+	(SELECT user_name FROM user_info WHERE user_info.id = pr.user_info_id ) AS report_name,
 	pr.report_title,
 	pr.report_contents,
 	pr.report_img1,

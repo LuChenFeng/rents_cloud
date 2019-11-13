@@ -20,7 +20,7 @@ public class PostsReport {
 
     private String gmtModified;
 
-    private Boolean hasHandle;
+    private Byte hasHandle;
 
     private String reportContents;
   }
