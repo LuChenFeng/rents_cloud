@@ -11,6 +11,7 @@ public class BaseConstant {
     public static final byte STATE_NORMAL = 1;
     //用户信息--初始实名
     public static final byte REAL_NAME = 0;
+    public static final byte YES_REAL_NAME = 1;
 
     //    用户状态 1 正常
     public static final byte IS_STATE = 1;

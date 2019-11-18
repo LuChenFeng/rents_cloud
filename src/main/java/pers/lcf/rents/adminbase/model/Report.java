@@ -14,6 +14,7 @@ public class Report {
     private  String releaseId;
     private String postsInfoId;
     private String releaseName;
+    private  String title;
     private String reportName;
     private String reportTitle;
     private String reportContents;

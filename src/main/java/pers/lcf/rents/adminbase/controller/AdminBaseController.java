@@ -55,6 +55,13 @@ public class AdminBaseController {
         return responseJson;
     }
 
+    /**
+     * @Param: [ids]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 14:20
+     * 用户信息批量删除
+     */
     @DeleteMapping("/ordinaryUsers/{ids}")
     public ResponseJson delOrdinaryUserById(@PathVariable("ids") String ids) {
         List<String> userInfoIds = Arrays.asList(ids.split(","));
@@ -62,21 +69,44 @@ public class AdminBaseController {
         responseJson.setResPonse(flag);
         return responseJson;
     }
+
+    /**
+     * @Param: []
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 14:21
+     * 普通用户饼图数据
+     */
     @GetMapping("/ordinaryUsersPei")
-    public  ResponseJson getOrdinaryUsersPei(){
-        OrdinaryUsersPei ordinaryUsersPei=  adminBaseServiceImpl.getOrdinaryUsersPei();
+    public ResponseJson getOrdinaryUsersPei() {
+        OrdinaryUsersPei ordinaryUsersPei = adminBaseServiceImpl.getOrdinaryUsersPei();
         responseJson.setSuccessResPonse(ordinaryUsersPei);
         return responseJson;
     }
 
+    /**
+     * @Param: [userDTO]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 14:21
+     * 管理员用户分页
+     */
     @PostMapping("/adminUsers")
-    public  ResponseJson getAdminUsersDTO(@RequestBody UserDTO userDTO){
+    public ResponseJson getAdminUsersDTO(@RequestBody UserDTO userDTO) {
         UserDTO dto = adminBaseServiceImpl.getAdminUsersDTO(userDTO);
         responseJson.setSuccessResPonse(dto);
         return responseJson;
     }
+
+    /**
+     * @Param: [user]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 14:21
+     * 修改管理员用户信息
+     */
     @PutMapping("/adminUsers")
-    public  ResponseJson updataAdminUsersDTO(@RequestBody User user){
+    public ResponseJson updataAdminUsersDTO(@RequestBody User user) {
         int flag = adminBaseServiceImpl.updateOrdinaryUser(user);
         responseJson.setResPonse(flag);
         return responseJson;
@@ -96,10 +126,68 @@ public class AdminBaseController {
         return responseJson;
     }
 
+    /**
+     * @Param: [report]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 14:21
+     * 举报记录修改
+     */
     @PutMapping("/postsReports")
-    public  ResponseJson updatePostsReports(@RequestBody Report report){
-        Integer flag=adminBaseServiceImpl.updatePostsReports(report);
+    public ResponseJson updatePostsReports(@RequestBody Report report) {
+        Integer flag = adminBaseServiceImpl.updatePostsReports(report);
         responseJson.setResPonse(flag);
         return responseJson;
     }
+    /**
+     * @Param: [ids]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 14:26
+     * 举报记录批量删除
+     */
+    @DeleteMapping("/postsReports/{ids}")
+    public ResponseJson delPostsReportById(@PathVariable("ids") String ids) {
+        List<String> postsReportIds = Arrays.asList(ids.split(","));
+        int flag = adminBaseServiceImpl.delPostsReportById(postsReportIds);
+        responseJson.setResPonse(flag);
+        return responseJson;
+    }
+
+    /**
+     * @Param: [postsReportDTO]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 15:57
+     * 用户实名记录分页
+     */
+    @PostMapping("/getUserRealNames")
+    public ResponseJson getUserRealNamesByDTO(@RequestBody UserRealNameDTO userRealNameDTO) {
+        UserRealNameDTO dto = adminBaseServiceImpl.getUserRealNamesByDTO(userRealNameDTO);
+        responseJson.setSuccessResPonse(dto);
+        return responseJson;
+    }
+
+    /**
+     * @Param: [userRealName]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 22:36
+     * 用户实名审核信息修改
+     */
+    @PutMapping("/userRealNames")
+    public ResponseJson updateUserRealNames(@RequestBody UserRealName userRealName) {
+        Integer flag = adminBaseServiceImpl.updateUserRealNames(userRealName);
+        responseJson.setResPonse(flag);
+        return responseJson;
+    }
+
+    @DeleteMapping("/userRealNames/{ids}")
+    public ResponseJson delUserRealNames(@PathVariable("ids") String ids) {
+        List<String> userInfoIds = Arrays.asList(ids.split(","));
+        int flag = adminBaseServiceImpl.delUserRealNameById(userInfoIds);
+        responseJson.setResPonse(flag);
+        return responseJson;
+    }
+
 }

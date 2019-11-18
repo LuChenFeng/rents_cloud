@@ -165,6 +165,9 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public PostDetails getPostInfoById(String id) {
         PostDetails postDetails = postsInfoMapper.getPostInfoById(id);
+        if(postDetails==null){
+            return null;
+        }
 //        找该贴附图
         PostsImgExample example = new PostsImgExample();
         PostsImgExample.Criteria criteria = example.createCriteria();

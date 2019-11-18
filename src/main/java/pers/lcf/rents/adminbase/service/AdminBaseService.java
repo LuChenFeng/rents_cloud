@@ -15,7 +15,16 @@ public interface AdminBaseService {
     Integer delOrdinaryUserById(List<String> ids);
 
     OrdinaryUsersPei getOrdinaryUsersPei();
+
     PostsReportDTO getPostsReportsByDTO(PostsReportDTO postsReportDTO);
+
     Integer updatePostsReports(Report report);
 
+    Integer delPostsReportById(List<String> ids);
+
+    UserRealNameDTO  getUserRealNamesByDTO(UserRealNameDTO userRealNameDTO);
+
+    Integer updateUserRealNames(UserRealName userRealName);
+
+    Integer delUserRealNameById(List<String> ids);
 }

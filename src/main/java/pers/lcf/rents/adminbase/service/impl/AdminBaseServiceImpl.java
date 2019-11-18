@@ -6,6 +6,7 @@ import cn.hutool.core.util.PageUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pers.lcf.rents.adminbase.mapper.UserRealNameMapper;
 import pers.lcf.rents.adminbase.model.*;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
 import pers.lcf.rents.forum.mapper.PostsReportMapper;
@@ -38,11 +39,19 @@ public class AdminBaseServiceImpl implements AdminBaseService {
     private UserLoginMapper userLoginMapper;
 
     @Autowired
-    UserBaseService userBaseServiceImpl;
+    private UserBaseService userBaseServiceImpl;
     @Autowired
-    PostsReportMapper postsReportMapper;
+    private PostsReportMapper postsReportMapper;
+    @Autowired
+    private UserRealNameMapper userRealNameMapper;
 
-
+    /**
+     * @Param: [postsReportDTO]
+     * @Return: pers.lcf.rents.adminbase.model.PostsReportDTO
+     * @Author: lcf
+     * @Date: 2019/11/16 13:48
+     * 举报记录分页
+     */
     @Override
     public PostsReportDTO getPostsReportsByDTO(PostsReportDTO postsReportDTO) {
         int[] startEnd = PageUtil.transToStartEnd(postsReportDTO.getPageNo(), postsReportDTO.getPageSize());
@@ -103,6 +112,100 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         Integer flagui = userInfoMapper.updateByExampleSelective(userInfo, exampleui);
 
         return flagui;
+    }
+
+    /**
+     * @Param: [ids]
+     * @Return: java.lang.Integer
+     * @Author: lcf
+     * @Date: 2019/11/16 14:28
+     * 帖子举报信息批量删除
+     */
+    @Override
+    public Integer delPostsReportById(List<String> ids) {
+        Integer flag = postsReportMapper.delPostsReportById(ids);
+        return flag;
+    }
+
+    /**
+     * @Param: [userRealNameDTO]
+     * @Return: pers.lcf.rents.adminbase.model.UserRealNameDTO
+     * @Author: lcf
+     * @Date: 2019/11/16 15:59
+     * 用户实名记录分页
+     */
+    @Override
+    public UserRealNameDTO getUserRealNamesByDTO(UserRealNameDTO userRealNameDTO) {
+        int[] startEnd = PageUtil.transToStartEnd(userRealNameDTO.getPageNo(), userRealNameDTO.getPageSize());
+        UserRealName userRealName = userRealNameDTO.getUserRealNames().get(0);
+
+//        判断时间范围，是否有选中时间
+        String times[] = {userRealName.getGmtCreateBegin(), userRealName.getGmtCreateEnd()};
+        String selectTime[] = RentsUtil.selectTime(times);
+        userRealName.setGmtCreateBegin(selectTime[0]);
+        userRealName.setGmtCreateEnd(selectTime[1]);
+
+        List<List<?>> dtoList = userRealNameMapper.getUserRealNamesByDTO(userRealName, startEnd[0], startEnd[1]);
+        List<UserRealName> userRealNames = (List<UserRealName>) dtoList.get(0);
+        UserRealNameDTO dto = new UserRealNameDTO();
+        dto.setUserRealNames(userRealNames);
+        List<Integer> count = (List<Integer>) dtoList.get(1);
+        int totalCount = count.get(0);
+        int totalPage = PageUtil.totalPage(totalCount, userRealNameDTO.getPageSize());
+        dto.setTotalCount(totalCount);
+        dto.setTotalPage(totalPage);
+        dto.setPageNo(userRealNameDTO.getPageNo());
+        dto.setPageSize(userRealNameDTO.getPageSize());
+        return dto;
+//        return null;
+    }
+
+    /**
+     * @Param: [userRealName]
+     * @Return: java.lang.Integer
+     * @Author: lcf
+     * @Date: 2019/11/16 21:54
+     * 用户审核记录信息修改
+     */
+    @Override
+    public Integer updateUserRealNames(UserRealName userRealName) {
+        if (userRealName.getHasHandle() == BaseConstant.YES_HAS_HANDLE) {
+            return 0;
+        }
+        UserRealName userReal = new UserRealName();
+        userReal.setHasHandle(BaseConstant.YES_HAS_HANDLE);
+        userReal.setGmtModified(DateUtil.now());
+        UserRealNameExample exampleReal = new UserRealNameExample();
+        UserRealNameExample.Criteria criteria = exampleReal.createCriteria();
+        criteria.andIdEqualTo(userRealName.getId());
+        Integer flagReal = userRealNameMapper.updateByExampleSelective(userReal, exampleReal);
+        if (flagReal <= 0) {
+            return 0;
+        }
+
+
+        UserInfo userInfo=new UserInfo();
+        userInfo.setHasRealName(BaseConstant.YES_REAL_NAME);
+        userInfo.setGmtModified(DateUtil.now());
+        UserInfoExample exampleinfo=new UserInfoExample();
+        UserInfoExample.Criteria criteriainfo=exampleinfo.createCriteria();
+        criteriainfo.andIdEqualTo(userRealName.getUserInfoId());
+        Integer flagInfo=userInfoMapper.updateByExampleSelective(userInfo,exampleinfo);
+
+        return flagInfo;
+    }
+
+    /**
+     * @Param: [ids]
+     * @Return: java.lang.Integer
+     * @Author: lcf
+     * @Date: 2019/11/16 22:35
+     * 用户审核批量删除
+     */
+    @Override
+    public Integer delUserRealNameById(List<String> ids) {
+       Integer flag= userRealNameMapper.delUserRealNameById(ids);
+        return flag;
     }
 
     /**
@@ -170,6 +273,13 @@ public class AdminBaseServiceImpl implements AdminBaseService {
 
     }
 
+    /**
+     * @Param: []
+     * @Return: pers.lcf.rents.adminbase.model.OrdinaryUsersPei
+     * @Author: lcf
+     * @Date: 2019/11/16 13:45
+     * 获取饼图数据
+     */
     @Override
     public OrdinaryUsersPei getOrdinaryUsersPei() {
         OrdinaryUsersPei ordinaryUsersPei = userInfoMapper.getOrdinaryUsersPei();
@@ -198,21 +308,6 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         User user = userDTO.getUsers().get(0);
         user.setUserTypeName(type);
 //        判断时间范围，是否有选中时间
-//        if (user.getGmtCreateBegin() != null && !("".equals(user.getGmtCreateBegin()))
-//                && user.getGmtCreateEnd() != null && !("".equals(user.getGmtCreateEnd()))) {
-//            Date dateBegin = DateUtil.parse(user.getGmtCreateBegin());
-//            Date dateEnd = DateUtil.parse(user.getGmtCreateEnd());
-//            if (dateBegin.compareTo(dateEnd) > 0) {
-//                String date;
-//                date = user.getGmtCreateBegin();
-//                user.setGmtCreateBegin(user.getGmtCreateEnd());
-//                user.setGmtCreateEnd(date);
-//            }
-//        } else {
-//            user.setGmtCreateBegin(null);
-//            user.setGmtCreateEnd(null);
-//        }
-
         String times[] = {user.getGmtCreateBegin(), user.getGmtCreateEnd()};
         String selectTime[] = RentsUtil.selectTime(times);
         user.setGmtCreateBegin(selectTime[0]);
