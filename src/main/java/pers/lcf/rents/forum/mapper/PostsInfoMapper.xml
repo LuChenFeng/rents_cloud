@@ -27,13 +27,27 @@
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
         <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
         <result column="sex" jdbcType="CHAR" property="sex"/>
-        <result column="has_real_name" jdbcType="TINYINT" property="hasRealName" />
+        <result column="has_real_name" jdbcType="TINYINT" property="hasRealName"/>
         <result column="birthady" jdbcType="TIMESTAMP" property="birthady"/>
     </resultMap>
     <resultMap extends="PostsUserMap" id="PostsDetailMap" type="pers.lcf.rents.forum.model.PostDetails">
         <association property="postsInfo" resultMap="ResultMapWithBLOBs"></association>
     </resultMap>
+    <resultMap id="CountPostsInfoMap" type="Integer">
+        <result column="count" jdbcType="INTEGER" javaType="Integer"/>
+    </resultMap>
 
+    <resultMap id="PostsInfoDetailsMap" type="pers.lcf.rents.adminbase.model.PostsInfoDetails">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="post_type_name" jdbcType="VARCHAR" property="postTypeName"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="report_sum" jdbcType="INTEGER" property="reportSum"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="contents" jdbcType="LONGVARCHAR" property="contents"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+
+    </resultMap>
 
     <sql id="Example_Where_Clause">
 
@@ -137,7 +151,46 @@
     WHERE  pi.id=#{id} and pi.user_info_id=ui.id and pi.post_type_id=pt.id
   </select>
 
-    <select id="getPostDetailsByPage" resultMap="PostsDetailMap" parameterType="pers.lcf.rents.forum.model.PostDeatailsDTO">
+    <!--    管理员帖子分页管理-->
+    <select id="getPostsInfoByDTO" resultMap="PostsInfoDetailsMap,CountPostsInfoMap">
+        SELECT SQL_CALC_FOUND_ROWS
+        pi.id,
+        pt.post_type_name,
+        ui.user_name,
+        ui.report_sum,
+        pi.title,
+        pi.contents,
+        pi.price,
+        pi.gmt_create
+        FROM
+        `user_info` ui,
+        `posts_info` pi,
+        `posts_type` pt
+
+
+        <where>
+            pi.user_info_id = ui.id AND pi.post_type_id = pt.id
+
+            <if test="record.userId != null and record.userId != '' ">
+                AND ui.id = #{record.userId}
+            </if>
+            <if test="record.userName != null and record.userName != '' ">
+                AND ui.user_name like '%${record.userName}%'
+            </if>
+            <if test="record.postTypeName != null and record.postTypeName != ''">
+                AND pt.post_type_name=#{record.postTypeName}
+            </if>
+            <if test="record.gmtCreateBegin != null and record.gmtCreateEnd !=null ">
+                AND pi.gmt_create &gt; #{record.gmtCreateBegin} AND pi.gmt_create &lt; #{record.gmtCreateEnd}
+            </if>
+        </where>
+        LIMIT #{start}, #{end};
+        SELECT
+        FOUND_ROWS( ) AS count;
+    </select>
+    <!--    APP帖子分页管理-->
+    <select id="getPostDetailsByPage" resultMap="PostsDetailMap"
+            parameterType="pers.lcf.rents.forum.model.PostDeatailsDTO">
         SELECT
         pi.id posts_id,
         pt.post_type_name,

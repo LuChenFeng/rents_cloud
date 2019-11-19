@@ -48,7 +48,9 @@ public class ForumServiceImpl implements ForumService {
     public List<PostsType> selectTypeByIsHave(Byte isHave) {
         PostsTypeExample example = new PostsTypeExample();
         PostsTypeExample.Criteria criteria = example.createCriteria();
-        criteria.andIsHaveEqualTo(isHave);
+        if(isHave!=null && !"".equals(example)){
+            criteria.andIsHaveEqualTo(isHave);
+        }
         List<PostsType> postsTypes = postsTypeMapper.selectByExample(example);
         return postsTypes;
     }

@@ -87,6 +87,8 @@ public class UserBaseServiceImpl implements UserBaseService {
         return userInfos;
     }
 
+
+
     /**
      * @Param: [userStyle]
      * @Return: java.lang.Integer
@@ -323,8 +325,11 @@ public class UserBaseServiceImpl implements UserBaseService {
         userLogin.setId(loginId);
         userLogin.setUserTypeId(userTypeId);
         userLogin.setLoginName(userLoginAppInfo.getLoginName());
-        if (userLoginAppInfo.getPassword() != null || !("".equals(userLoginAppInfo.getPassword()))) {
+        if (userLoginAppInfo.getPassword() != null && !("".equals(userLoginAppInfo.getPassword()))) {
             String pwd = SecureUtil.md5(userLoginAppInfo.getPassword());
+            userLogin.setPassword(pwd);
+        }else{
+            String pwd = SecureUtil.md5(userLoginAppInfo.getLoginName());
             userLogin.setPassword(pwd);
         }
         userLogin.setIsState(BaseConstant.STATE_NORMAL);

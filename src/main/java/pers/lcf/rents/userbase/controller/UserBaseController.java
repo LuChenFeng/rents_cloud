@@ -51,7 +51,19 @@ public class UserBaseController {
         responseJson.setSuccessResPonse(userInfos);
         return responseJson;
     }
-
+ /**
+  * @Param: [id]
+  * @Return: pers.lcf.rents.utils.ResponseJson
+  * @Author: lcf
+  * @Date: 2019/11/19 22:30
+  * 获取用户信息
+  */
+    @GetMapping("/userInfo")
+    public ResponseJson getUserInfoById(String id) {
+        List<UserInfo> userInfos=userBaseServiceImpl.getusreInfoById(id);
+        responseJson.setSuccessResPonse(userInfos);
+        return responseJson;
+    }
     /**
      * @Param: [userId]
      * @Return: pers.lcf.rents.utils.ResponseJson

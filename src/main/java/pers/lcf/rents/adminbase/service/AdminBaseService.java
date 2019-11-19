@@ -22,9 +22,11 @@ public interface AdminBaseService {
 
     Integer delPostsReportById(List<String> ids);
 
-    UserRealNameDTO  getUserRealNamesByDTO(UserRealNameDTO userRealNameDTO);
+    UserRealNameDTO getUserRealNamesByDTO(UserRealNameDTO userRealNameDTO);
 
     Integer updateUserRealNames(UserRealName userRealName);
 
     Integer delUserRealNameById(List<String> ids);
+
+    PostDetailsDTO getPostsInfoByDTO(PostDetailsDTO postDetailsDTO);
 }

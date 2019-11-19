@@ -181,7 +181,13 @@ public class AdminBaseController {
         responseJson.setResPonse(flag);
         return responseJson;
     }
-
+/**
+ * @Param: [ids]
+ * @Return: pers.lcf.rents.utils.ResponseJson
+ * @Author: lcf
+ * @Date: 2019/11/19 11:24
+ * 批量删除实名信息
+ */
     @DeleteMapping("/userRealNames/{ids}")
     public ResponseJson delUserRealNames(@PathVariable("ids") String ids) {
         List<String> userInfoIds = Arrays.asList(ids.split(","));
@@ -189,5 +195,20 @@ public class AdminBaseController {
         responseJson.setResPonse(flag);
         return responseJson;
     }
+
+    /**
+     * @Param: [postsReportDTO]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/16 15:57
+     * 用户实名记录分页
+     */
+    @PostMapping("/getPostsInfo")
+    public ResponseJson getPostsInfoByDTO(@RequestBody PostDetailsDTO postDetailsDTO) {
+        PostDetailsDTO dto = adminBaseServiceImpl.getPostsInfoByDTO(postDetailsDTO);
+        responseJson.setSuccessResPonse(dto);
+        return responseJson;
+    }
+
 
 }

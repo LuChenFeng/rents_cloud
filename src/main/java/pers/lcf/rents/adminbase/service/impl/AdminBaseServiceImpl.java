@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import pers.lcf.rents.adminbase.mapper.UserRealNameMapper;
 import pers.lcf.rents.adminbase.model.*;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
+import pers.lcf.rents.forum.mapper.PostsInfoMapper;
 import pers.lcf.rents.forum.mapper.PostsReportMapper;
+import pers.lcf.rents.forum.model.PostDetails;
 import pers.lcf.rents.forum.model.PostsReport;
 import pers.lcf.rents.forum.model.PostsReportExample;
 import pers.lcf.rents.userbase.mapper.UserInfoMapper;
@@ -23,6 +25,7 @@ import pers.lcf.rents.utils.BaseConstant;
 import pers.lcf.rents.utils.RentsUtil;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * @ClassName AdminBaseServiceImpl
@@ -44,6 +47,9 @@ public class AdminBaseServiceImpl implements AdminBaseService {
     private PostsReportMapper postsReportMapper;
     @Autowired
     private UserRealNameMapper userRealNameMapper;
+
+    @Autowired
+    private PostsInfoMapper postsInfoMapper;
 
     /**
      * @Param: [postsReportDTO]
@@ -207,6 +213,44 @@ public class AdminBaseServiceImpl implements AdminBaseService {
        Integer flag= userRealNameMapper.delUserRealNameById(ids);
         return flag;
     }
+/**
+ * @Param: [postDetailsDTO]
+ * @Return: pers.lcf.rents.adminbase.model.PostDetailsDTO
+ * @Author: lcf
+ * @Date: 2019/11/19 11:28
+ * 帖子管理分页
+ */
+    @Override
+    public PostDetailsDTO getPostsInfoByDTO(PostDetailsDTO postDetailsDTO) {
+        int[] startEnd = PageUtil.transToStartEnd(postDetailsDTO.getPageNo(), postDetailsDTO.getPageSize());
+        PostsInfoDetails postDetails=null;
+        try {
+           postDetails = postDetailsDTO.getPostsInfoDetailses().get(0);
+        }catch (Exception e){
+            System.out.println("空指针");
+        }
+
+
+//        判断时间范围，是否有选中时间
+        String times[] = {postDetails.getGmtCreateBegin(), postDetails.getGmtCreateEnd()};
+        String selectTime[] = RentsUtil.selectTime(times);
+        postDetails.setGmtCreateBegin(selectTime[0]);
+        postDetails.setGmtCreateEnd(selectTime[1]);
+
+        List<List<?>> dtoList =postsInfoMapper.getPostsInfoByDTO(postDetails, startEnd[0], startEnd[1]);
+        List<PostsInfoDetails> postDetailses = (List<PostsInfoDetails>) dtoList.get(0);
+        PostDetailsDTO dto = new PostDetailsDTO();
+        dto.setPostsInfoDetailses(postDetailses);
+        List<Integer> count = (List<Integer>) dtoList.get(1);
+        int totalCount = count.get(0);
+        int totalPage = PageUtil.totalPage(totalCount, postDetailsDTO.getPageSize());
+        dto.setTotalCount(totalCount);
+        dto.setTotalPage(totalPage);
+        dto.setPageNo(postDetailsDTO.getPageNo());
+        dto.setPageSize(postDetailsDTO.getPageSize());
+        return dto;
+//        return null;
+    }
 
     /**
      * @Param: [userDTO]
@@ -326,5 +370,7 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         dto.setPageSize(userDTO.getPageSize());
         return dto;
     }
+
+
 
 }
