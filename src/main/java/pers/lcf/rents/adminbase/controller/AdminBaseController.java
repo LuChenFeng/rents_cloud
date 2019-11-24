@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import pers.lcf.rents.adminbase.model.*;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
+import pers.lcf.rents.userbase.model.UserInfo;
+import pers.lcf.rents.userbase.model.UserLogin;
 import pers.lcf.rents.utils.ResponseJson;
 
 import java.util.Arrays;
@@ -209,6 +211,23 @@ public class AdminBaseController {
         responseJson.setSuccessResPonse(dto);
         return responseJson;
     }
-
+    /**
+     * @Param: [postDetailsDTO]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/20 12:48
+     * 管理员登入
+     */
+    @PostMapping("/adminUserLogin")
+    public ResponseJson adminUserLogin(@RequestBody UserLogin userLogin) {
+        ResponseJson responseJsonLogin = adminBaseServiceImpl.adminUserLogin(userLogin);
+        return responseJsonLogin;
+    }
+    @GetMapping("/getAdminInfo")
+    private  ResponseJson getAdminInfoById(String id){
+        UserInfo userInfo=adminBaseServiceImpl.getAdminInfoById(id);
+        responseJson.setSuccessResPonse(userInfo);
+        return responseJson;
+    }
 
 }

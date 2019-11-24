@@ -21,4 +21,5 @@ public class UserInfo {
     private Integer reportSum;
     private String gmtCreate;
     private String gmtModified;
+    private  String token;
 }

@@ -41,9 +41,9 @@ public class ResponseJson<T> implements Serializable {
      * @Date: 2019/10/3 21:16
      * 执行失败时调用
      */
-    public void setErrorResPonse(T data) {
-        this.code = 500;
-        this.msg = "errcr";
+    public void setErrorResPonse(T data,String msg) {
+        this.code = 401;
+        this.msg =msg;
         this.data = data;
     }
 

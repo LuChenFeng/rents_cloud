@@ -1,6 +1,10 @@
 package pers.lcf.rents.adminbase.service;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import pers.lcf.rents.adminbase.model.*;
+import pers.lcf.rents.userbase.model.UserInfo;
+import pers.lcf.rents.userbase.model.UserLogin;
+import pers.lcf.rents.utils.ResponseJson;
 
 import java.util.List;
 
@@ -29,4 +33,8 @@ public interface AdminBaseService {
     Integer delUserRealNameById(List<String> ids);
 
     PostDetailsDTO getPostsInfoByDTO(PostDetailsDTO postDetailsDTO);
+
+    ResponseJson adminUserLogin(UserLogin userLogin);
+
+    UserInfo getAdminInfoById(String id);
 }

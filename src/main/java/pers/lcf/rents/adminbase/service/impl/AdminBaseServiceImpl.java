@@ -1,7 +1,9 @@
 package pers.lcf.rents.adminbase.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.PageUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import pers.lcf.rents.userbase.model.UserLoginExample;
 import pers.lcf.rents.userbase.service.UserBaseService;
 import pers.lcf.rents.utils.BaseConstant;
 import pers.lcf.rents.utils.RentsUtil;
+import pers.lcf.rents.utils.ResponseJson;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -50,6 +53,7 @@ public class AdminBaseServiceImpl implements AdminBaseService {
 
     @Autowired
     private PostsInfoMapper postsInfoMapper;
+
 
     /**
      * @Param: [postsReportDTO]
@@ -250,6 +254,47 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         dto.setPageSize(postDetailsDTO.getPageSize());
         return dto;
 //        return null;
+    }
+
+    @Override
+    public ResponseJson adminUserLogin(UserLogin userLogin) {
+        UserLoginExample example=new UserLoginExample();
+        UserLoginExample.Criteria criteria=example.createCriteria();
+        criteria.andLoginNameEqualTo(userLogin.getLoginName());
+        criteria.andPasswordEqualTo(userLogin.getPassword());
+        List<UserLogin>  userLogins= userLoginMapper.selectByExample(example);
+        ResponseJson responseJson=new ResponseJson();
+        Map<String,String> tokenMap=CollUtil.newHashMap();
+        tokenMap.put("token",IdUtil.simpleUUID());
+        if(CollUtil.isEmpty(userLogins)){
+            responseJson.setResPonseSelfMsg("用户名密码错误/用户不存在");
+//            responseJson.setErrorResPonse(tokenMap,"用户名密码错误/用户不存在");
+            return responseJson;
+        }
+        UserLogin user=userLogins.get(0);
+        if(!user.getIsState().equals(BaseConstant.IS_STATE)){
+            responseJson.setResPonseSelfMsg("账号已被封");
+//            responseJson.setErrorResPonse(tokenMap,"账号已被封");
+            return responseJson;
+        }
+
+        UserInfo userInfo = userInfoMapper.getUserInfoByLoginId(user.getLoginName());
+        userInfo.setToken( IdUtil.simpleUUID());
+        responseJson.setSuccessResPonse(userInfo);
+        return responseJson;
+    }
+
+    @Override
+    public UserInfo getAdminInfoById(String id) {
+        UserInfoExample example=new UserInfoExample();
+        UserInfoExample.Criteria criteria=example.createCriteria();
+        criteria.andIdEqualTo(id);
+        List<UserInfo> userInfos = userInfoMapper.selectByExample(example);
+        if(CollUtil.isEmpty(userInfos)){
+            return null;
+        }
+        userInfos.get(0).setToken( IdUtil.simpleUUID());
+        return  userInfos.get(0);
     }
 
     /**
