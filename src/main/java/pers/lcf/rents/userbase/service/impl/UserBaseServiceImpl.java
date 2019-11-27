@@ -6,20 +6,14 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pers.lcf.rents.userbase.mapper.UserInfoMapper;
-import pers.lcf.rents.userbase.mapper.UserLoginMapper;
-import pers.lcf.rents.userbase.mapper.UserStyleMapper;
-import pers.lcf.rents.userbase.mapper.UserTypeMapper;
+import pers.lcf.rents.userbase.mapper.*;
 import pers.lcf.rents.userbase.model.*;
 import pers.lcf.rents.userbase.service.UserBaseService;
 import pers.lcf.rents.utils.BaseConstant;
 import pers.lcf.rents.utils.ResponseJson;
 
 import javax.swing.text.Style;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName UserBaseServiceImpl
@@ -42,6 +36,8 @@ public class UserBaseServiceImpl implements UserBaseService {
     @Autowired
     private UserInfoMapper userInfoMapper;
 
+    @Autowired
+    private RentsOutMapper rentsOutMapper;
     /**
      * @Param: [userInfo]
      * @Return: pers.lcf.rents.userbase.model.UserInfo
@@ -288,6 +284,53 @@ public class UserBaseServiceImpl implements UserBaseService {
         }
         responseJson.setResPonseSelfMsg("注册成功");
         return responseJson;
+    }
+
+    /**
+     * @Param: [date]
+     * @Return: java.util.List<pers.lcf.rents.userbase.model.RentsOut>
+     * @Author: lcf
+     * @Date: 2019/11/26 1:55
+     * 获取当月改用户出差记录
+     */
+    @Override
+    public List<RentsOut> getUserOutsByMonth(String date,String userInfoId) {
+        Date thisDate = DateUtil.parse(date);
+        Date begin = DateUtil.beginOfMonth(thisDate);
+
+        Date end = DateUtil.endOfMonth(thisDate);
+
+        RentsOutExample example=new RentsOutExample();
+        RentsOutExample.Criteria criteria=example.createCriteria();
+        criteria.andUserInfoIdEqualTo(userInfoId);
+        criteria.andOutDateBetween(begin,end);
+
+        List<RentsOut> rentsOuts= rentsOutMapper.selectByExample(example);
+
+        return rentsOuts;
+    }
+/**
+ * @Param: [rentsOut]
+ * @Return: java.lang.Integer
+ * @Author: lcf
+ * @Date: 2019/11/26 2:20
+ * 添加出差记录
+ */
+    @Override
+    public Integer addUserOuts(RentsOut rentsOut) {
+
+        rentsOut.setId(IdUtil.simpleUUID());
+      Integer flag=  rentsOutMapper.insertSelective(rentsOut);
+        return flag;
+    }
+
+    @Override
+    public Integer delUserOut(String id) {
+        RentsOutExample example=new RentsOutExample();
+        RentsOutExample.Criteria criteria=example.createCriteria();
+        criteria.andIdEqualTo(id);
+        Integer flag= rentsOutMapper.deleteByExample(example);
+        return flag;
     }
 
     /**

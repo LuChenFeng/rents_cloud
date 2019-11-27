@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pers.lcf.rents.userbase.model.UserInfo;
-import pers.lcf.rents.userbase.model.UserLoginAppInfo;
-import pers.lcf.rents.userbase.model.UserMatch;
-import pers.lcf.rents.userbase.model.UserStyle;
+import pers.lcf.rents.userbase.model.*;
 import pers.lcf.rents.userbase.service.UserBaseService;
 import pers.lcf.rents.utils.FileUtil;
 import pers.lcf.rents.utils.ResponseJson;
@@ -189,6 +186,26 @@ public class UserBaseController {
     @PostMapping("/userRegisteredByAppInfo")
     public ResponseJson userRegisteredByAppInfo(@RequestBody UserLoginAppInfo userLoginAppInfo) {
         ResponseJson responseJson = userBaseServiceImpl.userRegisteredByAppInfo(userLoginAppInfo);
+        return responseJson;
+    }
+
+    @GetMapping("/userOuts")
+    public ResponseJson getUserOutsByMonth( String date,String userInfoId) {
+        List<RentsOut> rentsOuts = userBaseServiceImpl.getUserOutsByMonth(date,userInfoId);
+       responseJson.setSuccessResPonse(rentsOuts);
+        return responseJson;
+    }
+    @PostMapping("/userOuts")
+    public ResponseJson addUserOuts(@RequestBody RentsOut rentsOut) {
+        Integer flag = userBaseServiceImpl.addUserOuts(rentsOut);
+        responseJson.setResPonse(flag);
+        return responseJson;
+    }
+
+    @DeleteMapping("/userOuts")
+    public ResponseJson delUserOut( String id) {
+        Integer flag = userBaseServiceImpl.delUserOut(id);
+        responseJson.setResPonse(flag);
         return responseJson;
     }
 
