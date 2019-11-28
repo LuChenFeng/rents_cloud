@@ -7,6 +7,7 @@ package pers.lcf.rents.utils;
  * @Date 2019/10/4 14:30
  **/
 public class BaseConstant {
+    public  static  final  String APP_CODE="c392f2d5b84a4dca971d01da5739ccb2";
     //用户信息--用户初始状态码
     public static final byte STATE_NORMAL = 1;
     //用户信息--初始实名

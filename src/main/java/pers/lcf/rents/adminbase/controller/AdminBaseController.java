@@ -230,4 +230,9 @@ public class AdminBaseController {
         return responseJson;
     }
 
+@GetMapping("/realName")
+    private ResponseJson realName(){
+adminBaseServiceImpl.realName();
+        return null;
+}
 }

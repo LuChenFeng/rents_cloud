@@ -37,4 +37,6 @@ public interface AdminBaseService {
     ResponseJson adminUserLogin(UserLogin userLogin);
 
     UserInfo getAdminInfoById(String id);
+
+    ResponseJson realName();
 }
