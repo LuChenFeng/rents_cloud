@@ -27,10 +27,10 @@ public class BaseConstant {
     public static final float MATCH_NUM = 5;
 
     //linux下文件上传路径
-//    public static final String IMG_PATH = "/srv/rentsUpLoad/";
+    public static final String IMG_PATH = "/srv/rentsUpLoad/";
     //windows 文件上传测试路径
-    public static  final  String IMG_PATH="D:/rentsUpLoad/";
-//    public static final String IMG_URL = "http://47.102.192.121:8000/rents/rentsUpLoad/";
-    public static final String IMG_URL = "http://127.0.0.1:8000/rents/rentsUpLoad/";
+//    public static  final  String IMG_PATH="D:/rentsUpLoad/";
+    public static final String IMG_URL = "http://47.102.192.121:8000/rents/rentsUpLoad/";
+//    public static final String IMG_URL = "http://127.0.0.1:8000/rents/rentsUpLoad/";
     public static final Byte YES_HAS_HANDLE=1;
 }

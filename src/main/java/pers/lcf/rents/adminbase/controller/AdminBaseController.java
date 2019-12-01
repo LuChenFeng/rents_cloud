@@ -257,11 +257,32 @@ public class AdminBaseController {
         return imgs;
     }
 
+    /**
+     * @Param: [realNameVO]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/12/2 1:43
+     * 实名认证
+     */
     @PostMapping("/realName")
-    public ResponseJson realName(@RequestBody RealNameVO realNameVO ) {
+    public ResponseJson realName(@RequestBody RealNameVO realNameVO) {
         String fileSon = "realName/";
-        List<String> imgUrls=realNameVO.getImgUrls();
-        responseJson= adminBaseServiceImpl.realName(realNameVO,fileSon);
-        return  responseJson;
+        List<String> imgUrls = realNameVO.getImgUrls();
+        responseJson = adminBaseServiceImpl.realName(realNameVO, fileSon);
+        return responseJson;
+    }
+
+    /**
+     * @Param: [id]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/12/2 1:43
+     * 实名信息查询
+     */
+    @GetMapping("/realName")
+    public ResponseJson getRealNameByUserInfoId(String id) {
+        List<UserRealName> userRealNames = adminBaseServiceImpl.getRealNameByUserInfoId(id);
+        responseJson.setSuccessResPonse(userRealNames);
+        return responseJson;
     }
 }

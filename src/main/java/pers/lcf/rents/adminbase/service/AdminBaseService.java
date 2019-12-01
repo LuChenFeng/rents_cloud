@@ -40,4 +40,6 @@ public interface AdminBaseService {
     UserInfo getAdminInfoById(String id);
 
     ResponseJson realName(RealNameVO realNameVO,String fileSon);
+
+    List<UserRealName> getRealNameByUserInfoId(String id);
 }

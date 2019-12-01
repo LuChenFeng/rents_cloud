@@ -372,6 +372,15 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         return responseJson;
     }
 
+    @Override
+    public List<UserRealName> getRealNameByUserInfoId(String id) {
+        UserRealNameExample example=new UserRealNameExample();
+        UserRealNameExample.Criteria criteria=example.createCriteria();
+        criteria.andUserInfoIdEqualTo(id);
+        List<UserRealName> userRealNames= userRealNameMapper.selectByExample(example);
+        return userRealNames;
+    }
+
 
     private String strFormat(String date) {
         String str = String.format("%s-%s-%s", date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
