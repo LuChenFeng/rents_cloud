@@ -6,6 +6,7 @@ import pers.lcf.rents.userbase.model.UserInfo;
 import pers.lcf.rents.userbase.model.UserLogin;
 import pers.lcf.rents.utils.ResponseJson;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface AdminBaseService {
@@ -26,11 +27,11 @@ public interface AdminBaseService {
 
     Integer delPostsReportById(List<String> ids);
 
-    UserRealNameDTO getUserRealNamesByDTO(UserRealNameDTO userRealNameDTO);
+//    UserRealNameDTO getUserRealNamesByDTO(UserRealNameDTO userRealNameDTO);
 
-    Integer updateUserRealNames(UserRealName userRealName);
+//    Integer updateUserRealNames(UserRealName userRealName);
 
-    Integer delUserRealNameById(List<String> ids);
+//    Integer delUserRealNameById(List<String> ids);
 
     PostDetailsDTO getPostsInfoByDTO(PostDetailsDTO postDetailsDTO);
 
@@ -38,5 +39,5 @@ public interface AdminBaseService {
 
     UserInfo getAdminInfoById(String id);
 
-    ResponseJson realName();
+    ResponseJson realName(RealNameVO realNameVO,String fileSon);
 }

@@ -1,10 +1,13 @@
 package pers.lcf.rents.adminbase.service.impl;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.PageUtil;
+
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +27,14 @@ import pers.lcf.rents.userbase.model.UserInfoExample;
 import pers.lcf.rents.userbase.model.UserLogin;
 import pers.lcf.rents.userbase.model.UserLoginExample;
 import pers.lcf.rents.userbase.service.UserBaseService;
-import pers.lcf.rents.utils.BaseConstant;
-import pers.lcf.rents.utils.HttpUtils;
-import pers.lcf.rents.utils.RentsUtil;
-import pers.lcf.rents.utils.ResponseJson;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
+import pers.lcf.rents.utils.*;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.commons.codec.binary.Base64.encodeBase64;
 
 import java.util.*;
-import java.util.logging.Logger;
+
 
 /**
  * @ClassName AdminBaseServiceImpl
@@ -69,6 +59,9 @@ public class AdminBaseServiceImpl implements AdminBaseService {
 
     @Autowired
     private PostsInfoMapper postsInfoMapper;
+
+    @Autowired
+    private ResponseJson responseJson;
 
 
     /**
@@ -160,31 +153,31 @@ public class AdminBaseServiceImpl implements AdminBaseService {
      * @Date: 2019/11/16 15:59
      * 用户实名记录分页
      */
-    @Override
-    public UserRealNameDTO getUserRealNamesByDTO(UserRealNameDTO userRealNameDTO) {
-        int[] startEnd = PageUtil.transToStartEnd(userRealNameDTO.getPageNo(), userRealNameDTO.getPageSize());
-        UserRealName userRealName = userRealNameDTO.getUserRealNames().get(0);
-
-//        判断时间范围，是否有选中时间
-        String times[] = {userRealName.getGmtCreateBegin(), userRealName.getGmtCreateEnd()};
-        String selectTime[] = RentsUtil.selectTime(times);
-        userRealName.setGmtCreateBegin(selectTime[0]);
-        userRealName.setGmtCreateEnd(selectTime[1]);
-
-        List<List<?>> dtoList = userRealNameMapper.getUserRealNamesByDTO(userRealName, startEnd[0], startEnd[1]);
-        List<UserRealName> userRealNames = (List<UserRealName>) dtoList.get(0);
-        UserRealNameDTO dto = new UserRealNameDTO();
-        dto.setUserRealNames(userRealNames);
-        List<Integer> count = (List<Integer>) dtoList.get(1);
-        int totalCount = count.get(0);
-        int totalPage = PageUtil.totalPage(totalCount, userRealNameDTO.getPageSize());
-        dto.setTotalCount(totalCount);
-        dto.setTotalPage(totalPage);
-        dto.setPageNo(userRealNameDTO.getPageNo());
-        dto.setPageSize(userRealNameDTO.getPageSize());
-        return dto;
-//        return null;
-    }
+//    @Override
+//    public UserRealNameDTO getUserRealNamesByDTO(UserRealNameDTO userRealNameDTO) {
+//        int[] startEnd = PageUtil.transToStartEnd(userRealNameDTO.getPageNo(), userRealNameDTO.getPageSize());
+//        UserRealName userRealName = userRealNameDTO.getUserRealNames().get(0);
+//
+////        判断时间范围，是否有选中时间
+//        String times[] = {userRealName.getGmtCreateBegin(), userRealName.getGmtCreateEnd()};
+//        String selectTime[] = RentsUtil.selectTime(times);
+//        userRealName.setGmtCreateBegin(selectTime[0]);
+//        userRealName.setGmtCreateEnd(selectTime[1]);
+//
+//        List<List<?>> dtoList = userRealNameMapper.getUserRealNamesByDTO(userRealName, startEnd[0], startEnd[1]);
+//        List<UserRealName> userRealNames = (List<UserRealName>) dtoList.get(0);
+//        UserRealNameDTO dto = new UserRealNameDTO();
+//        dto.setUserRealNames(userRealNames);
+//        List<Integer> count = (List<Integer>) dtoList.get(1);
+//        int totalCount = count.get(0);
+//        int totalPage = PageUtil.totalPage(totalCount, userRealNameDTO.getPageSize());
+//        dto.setTotalCount(totalCount);
+//        dto.setTotalPage(totalPage);
+//        dto.setPageNo(userRealNameDTO.getPageNo());
+//        dto.setPageSize(userRealNameDTO.getPageSize());
+//        return dto;
+////        return null;
+//    }
 
     /**
      * @Param: [userRealName]
@@ -193,33 +186,33 @@ public class AdminBaseServiceImpl implements AdminBaseService {
      * @Date: 2019/11/16 21:54
      * 用户审核记录信息修改
      */
-    @Override
-    public Integer updateUserRealNames(UserRealName userRealName) {
-        if (userRealName.getHasHandle() == BaseConstant.YES_HAS_HANDLE) {
-            return 0;
-        }
-        UserRealName userReal = new UserRealName();
-        userReal.setHasHandle(BaseConstant.YES_HAS_HANDLE);
-        userReal.setGmtModified(DateUtil.now());
-        UserRealNameExample exampleReal = new UserRealNameExample();
-        UserRealNameExample.Criteria criteria = exampleReal.createCriteria();
-        criteria.andIdEqualTo(userRealName.getId());
-        Integer flagReal = userRealNameMapper.updateByExampleSelective(userReal, exampleReal);
-        if (flagReal <= 0) {
-            return 0;
-        }
-
-
-        UserInfo userInfo=new UserInfo();
-        userInfo.setHasRealName(BaseConstant.YES_REAL_NAME);
-        userInfo.setGmtModified(DateUtil.now());
-        UserInfoExample exampleinfo=new UserInfoExample();
-        UserInfoExample.Criteria criteriainfo=exampleinfo.createCriteria();
-        criteriainfo.andIdEqualTo(userRealName.getUserInfoId());
-        Integer flagInfo=userInfoMapper.updateByExampleSelective(userInfo,exampleinfo);
-
-        return flagInfo;
-    }
+//    @Override
+//    public Integer updateUserRealNames(UserRealName userRealName) {
+//        if (userRealName.getHasHandle() == BaseConstant.YES_HAS_HANDLE) {
+//            return 0;
+//        }
+//        UserRealName userReal = new UserRealName();
+//        userReal.setHasHandle(BaseConstant.YES_HAS_HANDLE);
+//        userReal.setGmtModified(DateUtil.now());
+//        UserRealNameExample exampleReal = new UserRealNameExample();
+//        UserRealNameExample.Criteria criteria = exampleReal.createCriteria();
+//        criteria.andIdEqualTo(userRealName.getId());
+//        Integer flagReal = userRealNameMapper.updateByExampleSelective(userReal, exampleReal);
+//        if (flagReal <= 0) {
+//            return 0;
+//        }
+//
+//
+//        UserInfo userInfo=new UserInfo();
+//        userInfo.setHasRealName(BaseConstant.YES_REAL_NAME);
+//        userInfo.setGmtModified(DateUtil.now());
+//        UserInfoExample exampleinfo=new UserInfoExample();
+//        UserInfoExample.Criteria criteriainfo=exampleinfo.createCriteria();
+//        criteriainfo.andIdEqualTo(userRealName.getUserInfoId());
+//        Integer flagInfo=userInfoMapper.updateByExampleSelective(userInfo,exampleinfo);
+//
+//        return flagInfo;
+//    }
 
     /**
      * @Param: [ids]
@@ -228,25 +221,26 @@ public class AdminBaseServiceImpl implements AdminBaseService {
      * @Date: 2019/11/16 22:35
      * 用户审核批量删除
      */
-    @Override
-    public Integer delUserRealNameById(List<String> ids) {
-       Integer flag= userRealNameMapper.delUserRealNameById(ids);
-        return flag;
-    }
-/**
- * @Param: [postDetailsDTO]
- * @Return: pers.lcf.rents.adminbase.model.PostDetailsDTO
- * @Author: lcf
- * @Date: 2019/11/19 11:28
- * 帖子管理分页
- */
+//    @Override
+//    public Integer delUserRealNameById(List<String> ids) {
+//       Integer flag= userRealNameMapper.delUserRealNameById(ids);
+//        return flag;
+//    }
+
+    /**
+     * @Param: [postDetailsDTO]
+     * @Return: pers.lcf.rents.adminbase.model.PostDetailsDTO
+     * @Author: lcf
+     * @Date: 2019/11/19 11:28
+     * 帖子管理分页
+     */
     @Override
     public PostDetailsDTO getPostsInfoByDTO(PostDetailsDTO postDetailsDTO) {
         int[] startEnd = PageUtil.transToStartEnd(postDetailsDTO.getPageNo(), postDetailsDTO.getPageSize());
-        PostsInfoDetails postDetails=null;
+        PostsInfoDetails postDetails = null;
         try {
-           postDetails = postDetailsDTO.getPostsInfoDetailses().get(0);
-        }catch (Exception e){
+            postDetails = postDetailsDTO.getPostsInfoDetailses().get(0);
+        } catch (Exception e) {
             System.out.println("空指针");
         }
 
@@ -257,7 +251,7 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         postDetails.setGmtCreateBegin(selectTime[0]);
         postDetails.setGmtCreateEnd(selectTime[1]);
 
-        List<List<?>> dtoList =postsInfoMapper.getPostsInfoByDTO(postDetails, startEnd[0], startEnd[1]);
+        List<List<?>> dtoList = postsInfoMapper.getPostsInfoByDTO(postDetails, startEnd[0], startEnd[1]);
         List<PostsInfoDetails> postDetailses = (List<PostsInfoDetails>) dtoList.get(0);
         PostDetailsDTO dto = new PostDetailsDTO();
         dto.setPostsInfoDetailses(postDetailses);
@@ -274,154 +268,114 @@ public class AdminBaseServiceImpl implements AdminBaseService {
 
     @Override
     public ResponseJson adminUserLogin(UserLogin userLogin) {
-        UserLoginExample example=new UserLoginExample();
-        UserLoginExample.Criteria criteria=example.createCriteria();
+        UserLoginExample example = new UserLoginExample();
+        UserLoginExample.Criteria criteria = example.createCriteria();
         criteria.andLoginNameEqualTo(userLogin.getLoginName());
         criteria.andPasswordEqualTo(userLogin.getPassword());
-        List<UserLogin>  userLogins= userLoginMapper.selectByExample(example);
-        ResponseJson responseJson=new ResponseJson();
-        Map<String,String> tokenMap=CollUtil.newHashMap();
-        tokenMap.put("token",IdUtil.simpleUUID());
-        if(CollUtil.isEmpty(userLogins)){
+        List<UserLogin> userLogins = userLoginMapper.selectByExample(example);
+        ResponseJson responseJson = new ResponseJson();
+        Map<String, String> tokenMap = CollUtil.newHashMap();
+        tokenMap.put("token", IdUtil.simpleUUID());
+        if (CollUtil.isEmpty(userLogins)) {
             responseJson.setResPonseSelfMsg("用户名密码错误/用户不存在");
 //            responseJson.setErrorResPonse(tokenMap,"用户名密码错误/用户不存在");
             return responseJson;
         }
-        UserLogin user=userLogins.get(0);
-        if(!user.getIsState().equals(BaseConstant.IS_STATE)){
+        UserLogin user = userLogins.get(0);
+        if (!user.getIsState().equals(BaseConstant.IS_STATE)) {
             responseJson.setResPonseSelfMsg("账号已被封");
 //            responseJson.setErrorResPonse(tokenMap,"账号已被封");
             return responseJson;
         }
 
         UserInfo userInfo = userInfoMapper.getUserInfoByLoginId(user.getLoginName());
-        userInfo.setToken( IdUtil.simpleUUID());
+        userInfo.setToken(IdUtil.simpleUUID());
         responseJson.setSuccessResPonse(userInfo);
         return responseJson;
     }
 
     @Override
     public UserInfo getAdminInfoById(String id) {
-        UserInfoExample example=new UserInfoExample();
-        UserInfoExample.Criteria criteria=example.createCriteria();
+        UserInfoExample example = new UserInfoExample();
+        UserInfoExample.Criteria criteria = example.createCriteria();
         criteria.andIdEqualTo(id);
         List<UserInfo> userInfos = userInfoMapper.selectByExample(example);
-        if(CollUtil.isEmpty(userInfos)){
+        if (CollUtil.isEmpty(userInfos)) {
             return null;
         }
-        userInfos.get(0).setToken( IdUtil.simpleUUID());
-        return  userInfos.get(0);
+        userInfos.get(0).setToken(IdUtil.simpleUUID());
+        return userInfos.get(0);
     }
 
     @Override
-    public ResponseJson realName() {
-
-        String host = "http://dm-51.data.aliyun.com";
-        String path = "/rest/160601/ocr/ocr_idcard.json";
-        String appcode = BaseConstant.APP_CODE;
-        String imgFile = "F:\\正面.jpg";
-        Boolean is_old_format = false;//如果文档的输入中含有inputs字段，设置为True， 否则设置为False
-        //请根据线上文档修改configure字段
-        JSONObject configObj = new JSONObject();
-        configObj.put("side", "face");
-        String config_str = configObj.toString();
-        //            configObj.put("min_size", 5);
-        //            String config_str = "";
-
-        String method = "POST";
-        Map<String, String> headers = new HashMap<String, String>();
-        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
-        headers.put("Authorization", "APPCODE " + appcode);
-
-        Map<String, String> querys = new HashMap<String, String>();
-
-        // 对图像进行base64编码
-        String imgBase64 = "";
-        try {
-            File file = new File(imgFile);
-            byte[] content = new byte[(int) file.length()];
-            FileInputStream finputstream = new FileInputStream(file);
-            finputstream.read(content);
-            finputstream.close();
-            imgBase64 = new String(encodeBase64(content));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+    public ResponseJson realName(RealNameVO realNameVO, String fileSon) {
+        List<String> imgs = realNameVO.getImgUrls();
+        String[] side = {"face", "back"};
+        List<JSONObject> returnJsons = CollUtil.newArrayList();
+        //读出证件信息
+        if(imgs.size()<2){
+            responseJson.setResPonseSelfMsg("请同时上传正面、反面照片");
+            return responseJson;
         }
-        // 拼装请求body的json字符串
-        JSONObject requestObj = new JSONObject();
-        try {
-            if(is_old_format) {
-                JSONObject obj = new JSONObject();
-                obj.put("image", getParam(50, imgBase64));
-                if(config_str.length() > 0) {
-                    obj.put("configure", getParam(50, config_str));
-                }
-                JSONArray inputArray = new JSONArray();
-                inputArray.add(obj);
-                requestObj.put("inputs", inputArray);
-            }else{
-                requestObj.put("image", imgBase64);
-                if(config_str.length() > 0) {
-                    requestObj.put("configure", config_str);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        for (int i = 0; i < imgs.size(); i++) {
+            String imgUrl = imgs.get(i);
+            String[] strs = imgUrl.split("/");
+            String flieUrl = BaseConstant.IMG_PATH + fileSon + "/" + strs[strs.length - 1];
+            JSONObject returnJson = RealNameUtil.peopleIdDistinguish(flieUrl, side[i]);
+            returnJsons.add(returnJson);
+            FileUtil.delFile(flieUrl);
         }
-        String bodys = requestObj.toString();
 
-        try {
-            /**
-             * 重要提示如下:
-             * HttpUtils请从
-             * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/src/main/java/com/aliyun/api/gateway/demo/util/HttpUtils.java
-             * 下载
-             *
-             * 相应的依赖请参照
-             * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
-             */
-            HttpResponse response = HttpUtils.doPost(host, path, method, headers, querys, bodys);
-            int stat = response.getStatusLine().getStatusCode();
-            if(stat != 200){
-                System.out.println("Http code: " + stat);
-                System.out.println("http header error msg: "+ response.getFirstHeader("X-Ca-Error-Message"));
-                System.out.println("Http body error msg:" + EntityUtils.toString(response.getEntity()));
-                return null;
-            }
-
-            String res = EntityUtils.toString(response.getEntity());
-            JSONObject res_obj = JSON.parseObject(res);
-            if(is_old_format) {
-                JSONArray outputArray = res_obj.getJSONArray("outputs");
-                String output = outputArray.getJSONObject(0).getJSONObject("outputValue").getString("dataValue");
-                JSONObject out = JSON.parseObject(output);
-                System.out.println(out.toJSONString());
-            }else{
-                System.out.println(res_obj.toJSONString());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+//        转换成bean
+        if (returnJsons.get(0) == null || returnJsons.get(1) == null) {
+            responseJson.setResPonseSelfMsg("正面/反面识别失败，请从新上传");
+            return responseJson;
         }
-        return null;
+        UserRealName face = JSONObject.parseObject(String.valueOf(returnJsons.get(0)), UserRealName.class);
+        UserRealName back = JSONObject.parseObject(String.valueOf(returnJsons.get(1)), UserRealName.class);
+
+        UserRealName realName = face;
+        realName.setId(IdUtil.simpleUUID());
+        realName.setUserInfoId(realNameVO.getUserInfoId());
+        realName.setBirth(strFormat(face.getBirth()));
+        realName.setStartDate(strFormat(back.getStartDate()));
+        realName.setEndDate(strFormat(back.getEndDate()));
+        realName.setIssue(back.getIssue());
+        realName.setGmtCreate(DateUtil.now());
+        realName.setGmtModified(DateUtil.now());
+
+//        存入数据库
+        UserRealNameExample exampleReal = new UserRealNameExample();
+        UserRealNameExample.Criteria criteriaReal = exampleReal.createCriteria();
+        criteriaReal.andNumEqualTo(realName.getNum());
+        List<UserRealName> userRealNames = userRealNameMapper.selectByExample(exampleReal);
+        if (!CollUtil.isEmpty(userRealNames)) {
+            responseJson.setResPonseSelfMsg("该证件已被实名");
+            return responseJson;
+        }
+        int flagReal = userRealNameMapper.insertSelective(realName);
+        if (flagReal <= 0) {
+            responseJson.setResPonseSelfMsg("实名录入失败");
+            return responseJson;
+        }
+        //修改用户信息
+        UserInfo userInfo = new UserInfo();
+        userInfo.setHasRealName(BaseConstant.YES_REAL_NAME);
+        userInfo.setBirthady(realName.getBirth());
+        userInfo.setSex(realName.getSex());
+        userInfo.setGmtModified(DateUtil.now());
+        UserInfoExample exampleInfo = new UserInfoExample();
+        UserInfoExample.Criteria criteriaInfo = exampleInfo.createCriteria();
+        criteriaInfo.andIdEqualTo(realName.getUserInfoId());
+        int flag = userInfoMapper.updateByExampleSelective(userInfo, exampleInfo);
+        responseJson.setResPonse(flag);
+        return responseJson;
     }
 
-    /**
-     * @Param: [type, dataValue]
-     * @Return: com.alibaba.fastjson.JSONObject
-     * @Author: lcf
-     * @Date: 2019/11/29 0:27
-     * 证件识别 获取参数的json对象
-     */
-    public static JSONObject getParam(int type, String dataValue) {
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put("dataType", type);
-            obj.put("dataValue", dataValue);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return obj;
+
+    private String strFormat(String date) {
+        String str = String.format("%s-%s-%s", date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
+        return str;
     }
 
     /**
@@ -542,7 +496,6 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         dto.setPageSize(userDTO.getPageSize());
         return dto;
     }
-
 
 
 }

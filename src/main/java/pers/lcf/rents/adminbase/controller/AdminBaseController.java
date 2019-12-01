@@ -9,8 +9,10 @@ import pers.lcf.rents.adminbase.model.*;
 import pers.lcf.rents.adminbase.service.AdminBaseService;
 import pers.lcf.rents.userbase.model.UserInfo;
 import pers.lcf.rents.userbase.model.UserLogin;
+import pers.lcf.rents.utils.FileUtil;
 import pers.lcf.rents.utils.ResponseJson;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -141,6 +143,7 @@ public class AdminBaseController {
         responseJson.setResPonse(flag);
         return responseJson;
     }
+
     /**
      * @Param: [ids]
      * @Return: pers.lcf.rents.utils.ResponseJson
@@ -163,12 +166,12 @@ public class AdminBaseController {
      * @Date: 2019/11/16 15:57
      * 用户实名记录分页
      */
-    @PostMapping("/getUserRealNames")
-    public ResponseJson getUserRealNamesByDTO(@RequestBody UserRealNameDTO userRealNameDTO) {
-        UserRealNameDTO dto = adminBaseServiceImpl.getUserRealNamesByDTO(userRealNameDTO);
-        responseJson.setSuccessResPonse(dto);
-        return responseJson;
-    }
+//    @PostMapping("/getUserRealNames")
+//    public ResponseJson getUserRealNamesByDTO(@RequestBody UserRealNameDTO userRealNameDTO) {
+//        UserRealNameDTO dto = adminBaseServiceImpl.getUserRealNamesByDTO(userRealNameDTO);
+//        responseJson.setSuccessResPonse(dto);
+//        return responseJson;
+//    }
 
     /**
      * @Param: [userRealName]
@@ -177,26 +180,27 @@ public class AdminBaseController {
      * @Date: 2019/11/16 22:36
      * 用户实名审核信息修改
      */
-    @PutMapping("/userRealNames")
-    public ResponseJson updateUserRealNames(@RequestBody UserRealName userRealName) {
-        Integer flag = adminBaseServiceImpl.updateUserRealNames(userRealName);
-        responseJson.setResPonse(flag);
-        return responseJson;
-    }
-/**
- * @Param: [ids]
- * @Return: pers.lcf.rents.utils.ResponseJson
- * @Author: lcf
- * @Date: 2019/11/19 11:24
- * 批量删除实名信息
- */
-    @DeleteMapping("/userRealNames/{ids}")
-    public ResponseJson delUserRealNames(@PathVariable("ids") String ids) {
-        List<String> userInfoIds = Arrays.asList(ids.split(","));
-        int flag = adminBaseServiceImpl.delUserRealNameById(userInfoIds);
-        responseJson.setResPonse(flag);
-        return responseJson;
-    }
+//    @PutMapping("/userRealNames")
+//    public ResponseJson updateUserRealNames(@RequestBody UserRealName userRealName) {
+//        Integer flag = adminBaseServiceImpl.updateUserRealNames(userRealName);
+//        responseJson.setResPonse(flag);
+//        return responseJson;
+//    }
+
+    /**
+     * @Param: [ids]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/19 11:24
+     * 批量删除实名信息
+     */
+//    @DeleteMapping("/userRealNames/{ids}")
+//    public ResponseJson delUserRealNames(@PathVariable("ids") String ids) {
+//        List<String> userInfoIds = Arrays.asList(ids.split(","));
+//        int flag = adminBaseServiceImpl.delUserRealNameById(userInfoIds);
+//        responseJson.setResPonse(flag);
+//        return responseJson;
+//    }
 
     /**
      * @Param: [postsReportDTO]
@@ -211,6 +215,7 @@ public class AdminBaseController {
         responseJson.setSuccessResPonse(dto);
         return responseJson;
     }
+
     /**
      * @Param: [postDetailsDTO]
      * @Return: pers.lcf.rents.utils.ResponseJson
@@ -223,16 +228,40 @@ public class AdminBaseController {
         ResponseJson responseJsonLogin = adminBaseServiceImpl.adminUserLogin(userLogin);
         return responseJsonLogin;
     }
+
     @GetMapping("/getAdminInfo")
-    private  ResponseJson getAdminInfoById(String id){
-        UserInfo userInfo=adminBaseServiceImpl.getAdminInfoById(id);
+    private ResponseJson getAdminInfoById(String id) {
+        UserInfo userInfo = adminBaseServiceImpl.getAdminInfoById(id);
         responseJson.setSuccessResPonse(userInfo);
         return responseJson;
     }
 
-@GetMapping("/realName")
-    private ResponseJson realName(){
-adminBaseServiceImpl.realName();
-        return null;
-}
+//    @GetMapping("/realName")
+//    private ResponseJson realName() {
+//        adminBaseServiceImpl.realName();
+//        return null;
+//    }
+
+    /**
+     * @Param: [request]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/12/1 12:14
+     * 实名认证接口
+     */
+    @RequestMapping(value = "/realNameUpLoadImg", method = RequestMethod.POST)
+    @ResponseBody
+    public List<String> realNameUpLoadImg(HttpServletRequest request) {
+        String fileSon = "realName/";
+        List<String> imgs = FileUtil.multipleFilesUpload(request, fileSon);
+        return imgs;
+    }
+
+    @PostMapping("/realName")
+    public ResponseJson realName(@RequestBody RealNameVO realNameVO ) {
+        String fileSon = "realName/";
+        List<String> imgUrls=realNameVO.getImgUrls();
+        responseJson= adminBaseServiceImpl.realName(realNameVO,fileSon);
+        return  responseJson;
+    }
 }
