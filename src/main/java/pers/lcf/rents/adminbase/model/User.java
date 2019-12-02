@@ -28,5 +28,6 @@ public class User {
     private  String gmtCreateBegin;
     private String gmtCreateEnd;
     private  String userTypeName;
+    private  String userTypeNameTwo;
 
 }

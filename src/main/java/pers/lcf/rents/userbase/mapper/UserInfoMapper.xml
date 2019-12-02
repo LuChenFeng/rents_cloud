@@ -15,6 +15,7 @@
         <result column="report_sum" jdbcType="INTEGER" property="reportSum"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="user_type_name" jdbcType="VARCHAR" property="userTypeName"/>
     </resultMap>
 
     <!--    管理员 普通用户信息管理-->
@@ -32,6 +33,7 @@
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
         <result column="report_sum" jdbcType="INTEGER" property="postsSum"/>
+        <result column="user_type_name" jdbcType="VARCHAR" property="userTypeName"/>
     </resultMap>
     <resultMap id="CountMap" type="Integer">
         <result column="count" jdbcType="INTEGER" javaType="Integer"/>
@@ -129,11 +131,18 @@
         ui.report_sum,
         ul.gmt_create,
         ul.gmt_modified,
+        ut.user_type_name,
         (SELECT COUNT(*) AS id FROM `posts_info` WHERE `posts_info`.user_info_id=ui.id) posts_sum
         FROM
         `user_info` ui, `user_login` ul , `user_type` ut
         <where>
-            ui.user_login_id=ul.id AND ut.id=ul.user_type_id AND ut.user_type_name=#{record.userTypeName}
+            ui.user_login_id=ul.id AND ut.id=ul.user_type_id AND
+            ( ut.user_type_name=#{record.userTypeName}
+
+            <if test="record.userTypeNameTwo != null and record.userTypeNameTwo != ''">
+                OR ut.user_type_name =#{record.userTypeNameTwo}
+            </if>
+            )
             <if test="record.loginName != null and record.loginName != ''">
                 AND ul.login_name like '%${record.loginName}%'
             </if>
@@ -160,7 +169,7 @@
         LIMIT #{start}, #{end};
         SELECT FOUND_ROWS() AS count ;
     </select>
-<!--    普通用户饼图信息-->
+    <!--    普通用户饼图信息-->
     <select id="getOrdinaryUsersPei" resultMap="ordinaryUsersPeiMap">
      SELECT
 	(
@@ -244,9 +253,10 @@
 	LIMIT 0,1;
     </select>
     <select id="getUserInfoByLoginId" parameterType="String" resultMap="BaseResultMap">
-    SELECT ui.* FROM `user_info` ui, `user_login` ul
+
+   SELECT ui.*,ut.user_type_name FROM `user_info` ui, `user_login` ul,`user_type` ut
      WHERE ul.login_name=#{loginName}
-     and ui.user_login_id=ul.id
+     and ui.user_login_id=ul.id and ut.id=ul.user_type_id
 
   </select>
     <select id="selectByExample" parameterType="pers.lcf.rents.userbase.model.UserInfoExample"

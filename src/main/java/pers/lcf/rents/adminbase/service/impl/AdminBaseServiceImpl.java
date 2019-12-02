@@ -409,6 +409,7 @@ public class AdminBaseServiceImpl implements AdminBaseService {
      */
     @Override
     public UserDTO getAdminUsersDTO(UserDTO userDTO) {
+        userDTO.getUsers().get(0).setUserTypeNameTwo("超级管理员");
         UserDTO dto = getuserDTO(userDTO, "管理员");
         return dto;
     }
