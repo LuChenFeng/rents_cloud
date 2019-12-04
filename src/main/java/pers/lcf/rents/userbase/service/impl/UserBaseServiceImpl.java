@@ -38,6 +38,7 @@ public class UserBaseServiceImpl implements UserBaseService {
 
     @Autowired
     private RentsOutMapper rentsOutMapper;
+
     /**
      * @Param: [userInfo]
      * @Return: pers.lcf.rents.userbase.model.UserInfo
@@ -51,6 +52,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         UserInfoExample.Criteria criteria = example.createCriteria();
         criteria.andIdEqualTo(userInfo.getId());
         userInfo.setGmtModified(DateUtil.now());
+
         int flag = userInfoMapper.updateByExampleSelective(userInfo, example);
         return flag;
     }
@@ -63,7 +65,7 @@ public class UserBaseServiceImpl implements UserBaseService {
      * 用户详情页信息
      */
     @Override
-    public  List<UserMatch> getUserInfoStyleById(String id) {
+    public List<UserMatch> getUserInfoStyleById(String id) {
         UserStyleExample example = new UserStyleExample();
         UserStyleExample.Criteria criteria = example.createCriteria();
         criteria.andUserInfoIdEqualTo(id);
@@ -82,7 +84,6 @@ public class UserBaseServiceImpl implements UserBaseService {
         }
         return userInfos;
     }
-
 
 
     /**
@@ -234,7 +235,7 @@ public class UserBaseServiceImpl implements UserBaseService {
             responseJson.setSuccessResPonse(userInfo);
             return responseJson;
         }
-        if((BaseConstant.IS_STATE)!= userLogins.get(0).getIsState()){
+        if ((BaseConstant.IS_STATE) != userLogins.get(0).getIsState()) {
             responseJson.setResPonseSelfMsg("你已被封号");
             return responseJson;
         }
@@ -294,42 +295,114 @@ public class UserBaseServiceImpl implements UserBaseService {
      * 获取当月改用户出差记录
      */
     @Override
-    public List<RentsOut> getUserOutsByMonth(String date,String userInfoId) {
+    public List<RentsOut> getUserOutsByMonth(String date, String userInfoId) {
         Date thisDate = DateUtil.parse(date);
         Date begin = DateUtil.beginOfMonth(thisDate);
 
         Date end = DateUtil.endOfMonth(thisDate);
 
-        RentsOutExample example=new RentsOutExample();
-        RentsOutExample.Criteria criteria=example.createCriteria();
+        RentsOutExample example = new RentsOutExample();
+        RentsOutExample.Criteria criteria = example.createCriteria();
         criteria.andUserInfoIdEqualTo(userInfoId);
-        criteria.andOutDateBetween(begin,end);
+        criteria.andOutDateBetween(begin, end);
 
-        List<RentsOut> rentsOuts= rentsOutMapper.selectByExample(example);
+        List<RentsOut> rentsOuts = rentsOutMapper.selectByExample(example);
 
         return rentsOuts;
     }
-/**
- * @Param: [rentsOut]
- * @Return: java.lang.Integer
- * @Author: lcf
- * @Date: 2019/11/26 2:20
- * 添加出差记录
- */
+
+    /**
+     * @Param: [rentsOut]
+     * @Return: java.lang.Integer
+     * @Author: lcf
+     * @Date: 2019/11/26 2:20
+     * 添加出差记录
+     */
     @Override
     public Integer addUserOuts(RentsOut rentsOut) {
 
         rentsOut.setId(IdUtil.simpleUUID());
-      Integer flag=  rentsOutMapper.insertSelective(rentsOut);
+        Integer flag = rentsOutMapper.insertSelective(rentsOut);
         return flag;
     }
 
     @Override
     public Integer delUserOut(String id) {
-        RentsOutExample example=new RentsOutExample();
-        RentsOutExample.Criteria criteria=example.createCriteria();
+        RentsOutExample example = new RentsOutExample();
+        RentsOutExample.Criteria criteria = example.createCriteria();
         criteria.andIdEqualTo(id);
-        Integer flag= rentsOutMapper.deleteByExample(example);
+        Integer flag = rentsOutMapper.deleteByExample(example);
+        return flag;
+    }
+
+    /**
+     * @Param: [id, passwordOld, password]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/12/4 22:36
+     * 管理员密码修改
+     */
+    @Override
+    public ResponseJson updatePwdByUserInfoId(String id, String passwordOld, String password) {
+        UserLogin userLogin = userLoginMapper.selectByUserInfoId(id);
+        if (userLogin == null) {
+            responseJson.setResPonseSelfMsg("该用户账号信息异常");
+            return responseJson;
+        }
+        if (!userLogin.getPassword().equals(passwordOld)) {
+            responseJson.setResPonseSelfMsg("旧密码输入错误");
+            return responseJson;
+        }
+        int flag = updatePwd(userLogin.getId(), password);
+        responseJson.setResPonse(flag);
+        return responseJson;
+    }
+
+    /**
+     * @Param: [userLoginAppInfo]
+     * @Return: java.lang.Integer
+     * @Author: lcf
+     * @Date: 2019/12/4 22:36
+     * 普通用户密码修改
+     */
+    @Override
+    public ResponseJson updateUserPwd(UserLoginAppInfo userLoginAppInfo) {
+        UserInfoExample example = new UserInfoExample();
+        UserInfoExample.Criteria criteria = example.createCriteria();
+        criteria.andTelEqualTo(userLoginAppInfo.getTel());
+        List<UserInfo> userInfos = userInfoMapper.selectByExample(example);
+        if (CollUtil.isEmpty(userInfos)) {
+            responseJson.setResPonseSelfMsg("该手机号未被绑定");
+            return responseJson;
+        }
+        String userLoginId = userInfos.get(0).getUserLoginId();
+        UserLoginExample exampleLogin = new UserLoginExample();
+        UserLoginExample.Criteria criteriaLogin = exampleLogin.createCriteria();
+        criteriaLogin.andIdEqualTo(userLoginId);
+        criteriaLogin.andLoginNameEqualTo(userLoginAppInfo.getLoginName());
+        UserLogin userLogin = new UserLogin();
+        userLogin.setPassword(SecureUtil.md5(userLoginAppInfo.getPassword()));
+        userLogin.setGmtModified(DateUtil.now());
+        int flag = userLoginMapper.updateByExampleSelective(userLogin, exampleLogin);
+        responseJson.setResPonse(flag);
+        return responseJson;
+    }
+
+    /**
+     * @Param: [userInfoId, password]
+     * @Return: java.lang.Integer
+     * @Author: lcf
+     * @Date: 2019/12/3 22:00
+     * 密码修改
+     */
+    private Integer updatePwd(String id, String password) {
+        UserLoginExample example = new UserLoginExample();
+        UserLoginExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(id);
+        UserLogin userLogin = new UserLogin();
+        userLogin.setPassword(password);
+        userLogin.setGmtModified(DateUtil.now());
+        int flag = userLoginMapper.updateByExampleSelective(userLogin, example);
         return flag;
     }
 
@@ -371,7 +444,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         if (userLoginAppInfo.getPassword() != null && !("".equals(userLoginAppInfo.getPassword()))) {
             String pwd = SecureUtil.md5(userLoginAppInfo.getPassword());
             userLogin.setPassword(pwd);
-        }else{
+        } else {
             String pwd = SecureUtil.md5(userLoginAppInfo.getLoginName());
             userLogin.setPassword(pwd);
         }
@@ -400,15 +473,15 @@ public class UserBaseServiceImpl implements UserBaseService {
 
         if (userLoginAppInfo.getUserName() != null && !("".equals(userLoginAppInfo.getUserName()))) {
             userInfo.setUserName(userLoginAppInfo.getUserName());
-        }else{
+        } else {
             userInfo.setUserName(userLoginAppInfo.getUserName());
         }
         if (userLoginAppInfo.getAvatar() != null && !("".equals(userLoginAppInfo.getAvatar()))) {
             userInfo.setAvatar(userLoginAppInfo.getAvatar());
-        }else{
+        } else {
             userInfo.setAvatar(BaseConstant.AVATAR_NORMAL);
         }
-        if(userLoginAppInfo.getTel()!=null && !"".equals(userLoginAppInfo.getTel())){
+        if (userLoginAppInfo.getTel() != null && !"".equals(userLoginAppInfo.getTel())) {
             userInfo.setTel(userLoginAppInfo.getTel());
         }
         userInfo.setBirthady(DateUtil.now());

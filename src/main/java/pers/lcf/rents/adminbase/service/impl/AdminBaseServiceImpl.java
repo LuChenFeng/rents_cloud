@@ -313,7 +313,7 @@ public class AdminBaseServiceImpl implements AdminBaseService {
         String[] side = {"face", "back"};
         List<JSONObject> returnJsons = CollUtil.newArrayList();
         //读出证件信息
-        if(imgs.size()<2){
+        if (imgs.size() < 2) {
             responseJson.setResPonseSelfMsg("请同时上传正面、反面照片");
             return responseJson;
         }
@@ -374,12 +374,13 @@ public class AdminBaseServiceImpl implements AdminBaseService {
 
     @Override
     public List<UserRealName> getRealNameByUserInfoId(String id) {
-        UserRealNameExample example=new UserRealNameExample();
-        UserRealNameExample.Criteria criteria=example.createCriteria();
+        UserRealNameExample example = new UserRealNameExample();
+        UserRealNameExample.Criteria criteria = example.createCriteria();
         criteria.andUserInfoIdEqualTo(id);
-        List<UserRealName> userRealNames= userRealNameMapper.selectByExample(example);
+        List<UserRealName> userRealNames = userRealNameMapper.selectByExample(example);
         return userRealNames;
     }
+
 
 
     private String strFormat(String date) {

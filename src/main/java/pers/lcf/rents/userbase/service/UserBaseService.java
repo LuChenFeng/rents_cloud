@@ -23,9 +23,15 @@ public interface UserBaseService {
     ResponseJson userLoginByAppInfo(UserLoginAppInfo userLoginAppInfo);
 
     ResponseJson userRegisteredByAppInfo(UserLoginAppInfo userLoginAppInfo);
-     List<RentsOut> getUserOutsByMonth(String date,String userInfoId);
-     Integer  addUserOuts(RentsOut rentsOut);
 
-    Integer  delUserOut(String id);
+    List<RentsOut> getUserOutsByMonth(String date, String userInfoId);
+
+    Integer addUserOuts(RentsOut rentsOut);
+
+    Integer delUserOut(String id);
+
+    ResponseJson updatePwdByUserInfoId(String id, String passwordOld, String password);
+
+    ResponseJson updateUserPwd(UserLoginAppInfo userLoginAppInfo);
 }
 

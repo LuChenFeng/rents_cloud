@@ -42,4 +42,5 @@ public interface AdminBaseService {
     ResponseJson realName(RealNameVO realNameVO,String fileSon);
 
     List<UserRealName> getRealNameByUserInfoId(String id);
+
 }

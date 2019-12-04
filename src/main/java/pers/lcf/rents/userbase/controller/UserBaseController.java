@@ -48,19 +48,21 @@ public class UserBaseController {
         responseJson.setSuccessResPonse(userInfos);
         return responseJson;
     }
- /**
-  * @Param: [id]
-  * @Return: pers.lcf.rents.utils.ResponseJson
-  * @Author: lcf
-  * @Date: 2019/11/19 22:30
-  * 获取用户信息
-  */
+
+    /**
+     * @Param: [id]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/11/19 22:30
+     * 获取用户信息
+     */
     @GetMapping("/userInfo")
     public ResponseJson getUserInfoById(String id) {
-        List<UserInfo> userInfos=userBaseServiceImpl.getusreInfoById(id);
+        List<UserInfo> userInfos = userBaseServiceImpl.getusreInfoById(id);
         responseJson.setSuccessResPonse(userInfos);
         return responseJson;
     }
+
     /**
      * @Param: [userId]
      * @Return: pers.lcf.rents.utils.ResponseJson
@@ -70,8 +72,8 @@ public class UserBaseController {
      */
     @GetMapping("/userInfoStyle")
     public ResponseJson getUserInfoStyleById(String id) {
-        List<UserMatch> userMatches=userBaseServiceImpl.getUserInfoStyleById(id);
-        if(CollUtil.isEmpty(userMatches)){
+        List<UserMatch> userMatches = userBaseServiceImpl.getUserInfoStyleById(id);
+        if (CollUtil.isEmpty(userMatches)) {
             responseJson.setResPonseSelfMsg("获取失败");
             return responseJson;
         }
@@ -189,12 +191,27 @@ public class UserBaseController {
         return responseJson;
     }
 
+    /**
+     * @Param: [date, userInfoId]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/12/3 17:02
+     * 获取用户出差
+     */
     @GetMapping("/userOuts")
-    public ResponseJson getUserOutsByMonth( String date,String userInfoId) {
-        List<RentsOut> rentsOuts = userBaseServiceImpl.getUserOutsByMonth(date,userInfoId);
-       responseJson.setSuccessResPonse(rentsOuts);
+    public ResponseJson getUserOutsByMonth(String date, String userInfoId) {
+        List<RentsOut> rentsOuts = userBaseServiceImpl.getUserOutsByMonth(date, userInfoId);
+        responseJson.setSuccessResPonse(rentsOuts);
         return responseJson;
     }
+
+    /**
+     * @Param: [rentsOut]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/12/3 17:03
+     * 添加出差记录
+     */
     @PostMapping("/userOuts")
     public ResponseJson addUserOuts(@RequestBody RentsOut rentsOut) {
         Integer flag = userBaseServiceImpl.addUserOuts(rentsOut);
@@ -202,11 +219,29 @@ public class UserBaseController {
         return responseJson;
     }
 
+    /**
+     * @Param: [id]
+     * @Return: pers.lcf.rents.utils.ResponseJson
+     * @Author: lcf
+     * @Date: 2019/12/3 17:04
+     * 删除出差
+     */
     @DeleteMapping("/userOuts")
-    public ResponseJson delUserOut( String id) {
+    public ResponseJson delUserOut(String id) {
         Integer flag = userBaseServiceImpl.delUserOut(id);
         responseJson.setResPonse(flag);
         return responseJson;
     }
 
+    @GetMapping("/userPassword")
+    public ResponseJson updatePwdByUserInfoId(String id, String passwordOld, String password) {
+        responseJson = userBaseServiceImpl.updatePwdByUserInfoId(id, passwordOld, password);
+        return responseJson;
+    }
+
+    @PostMapping("/userPwd")
+    public  ResponseJson updateUserPwd(@RequestBody UserLoginAppInfo userLoginAppInfo){
+        responseJson=userBaseServiceImpl.updateUserPwd(userLoginAppInfo);
+        return  responseJson;
+    }
 }

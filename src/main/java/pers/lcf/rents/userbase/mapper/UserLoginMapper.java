@@ -9,6 +9,7 @@ import java.util.List;
 @Mapper
 public interface UserLoginMapper {
 
+   UserLogin selectByUserInfoId(String id);
     long countByExample(UserLoginExample example);
 
     int deleteByExample(UserLoginExample example);
